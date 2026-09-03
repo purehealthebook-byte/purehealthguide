@@ -307,9 +307,10 @@
       </div>
 
       <div class="cta-row" id="buy">
-        <a href="#" class="btn btn-primary">Buy the ebook — $19</a>
+        <div id="paypal-button-container" style="min-width:260px; max-width:320px;"></div>
         <a href="#inside" class="btn btn-ghost">See what's inside</a>
       </div>
+      <p id="paypal-status" style="font-size:13px; color:var(--dim); margin-top:10px;"></p>
     </div>
 
     <div class="hero-cover">
@@ -387,7 +388,7 @@
     <h2>Stop paying for products that don't work.</h2>
     <p>Get the guide that shows you what actually does — for less than the cost of one skincare product.</p>
     <div class="cta-row" style="justify-content:center;">
-      <a href="#" class="btn btn-primary">Buy the ebook — $19</a>
+      <a href="#buy" class="btn btn-primary">Buy the ebook — $19</a>
     </div>
   </div>
 </section>
@@ -428,6 +429,53 @@
     localStorage.setItem(key, count);
     document.getElementById('visit-count').textContent = count.toLocaleString();
   })();
+</script>
+
+<script src="https://www.paypal.com/sdk/js?client-id=AQvXxaPmRMQk9sfoo9AcSJs26LuWGE2RsUYCzhagWOk6fDXVqOApJBwfHtAYWeaI9rP4K0JRjRaR5_I2&currency=USD&enable-funding=paylater,card"></script>
+<script>
+  // ---- Fill these in once, then leave them alone ----
+  var SUPABASE_URL = "https://zarasbzkxjlsiydniitk.supabase.co";
+  var FUNCTIONS_BASE = SUPABASE_URL + "/functions/v1";
+  var PRODUCT_ID = "never-age-again";
+  // -----------------------------------------------------
+
+  var statusEl = document.getElementById('paypal-status');
+
+  paypal.Buttons({
+    style: { layout: 'vertical', color: 'black', shape: 'rect', label: 'pay' },
+
+    createOrder: function () {
+      statusEl.textContent = '';
+      return fetch(FUNCTIONS_BASE + '/create-paypal-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ product: PRODUCT_ID })
+      })
+        .then(function (res) { return res.json(); })
+        .then(function (data) { return data.id; });
+    },
+
+    onApprove: function (data) {
+      statusEl.textContent = 'Confirming your payment…';
+      return fetch(FUNCTIONS_BASE + '/capture-paypal-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderID: data.orderID })
+      })
+        .then(function (res) { return res.json(); })
+        .then(function (result) {
+          if (result.success) {
+            window.location.href = 'thank-you.html?order=' + encodeURIComponent(data.orderID);
+          } else {
+            statusEl.textContent = 'Payment did not complete. Please try again.';
+          }
+        });
+    },
+
+    onError: function () {
+      statusEl.textContent = 'Something went wrong. Please try again.';
+    }
+  }).render('#paypal-button-container');
 </script>
 
 </body>
