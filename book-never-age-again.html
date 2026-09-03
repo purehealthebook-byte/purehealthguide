@@ -436,6 +436,7 @@
   // ---- Fill these in once, then leave them alone ----
   var SUPABASE_URL = "https://zarasbzkxjlsiydniitk.supabase.co";
   var FUNCTIONS_BASE = SUPABASE_URL + "/functions/v1";
+  var SUPABASE_ANON_KEY = "sb_publishable_3lDfYDfblJDSnh62F8wHSQ_c789CdX5";
   var PRODUCT_ID = "never-age-again";
   // -----------------------------------------------------
 
@@ -448,7 +449,11 @@
       statusEl.textContent = '';
       return fetch(FUNCTIONS_BASE + '/create-paypal-order', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+          'apikey': SUPABASE_ANON_KEY
+        },
         body: JSON.stringify({ product: PRODUCT_ID })
       })
         .then(function (res) { return res.json(); })
@@ -459,7 +464,11 @@
       statusEl.textContent = 'Confirming your payment…';
       return fetch(FUNCTIONS_BASE + '/capture-paypal-order', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+          'apikey': SUPABASE_ANON_KEY
+        },
         body: JSON.stringify({ orderID: data.orderID })
       })
         .then(function (res) { return res.json(); })
