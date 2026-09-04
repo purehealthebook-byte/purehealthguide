@@ -420,17 +420,6 @@
   </div>
 </footer>
 
-<script>
-  // Placeholder visit counter — becomes a real Supabase-backed counter
-  // once the database is connected. For now it persists locally per browser.
-  (function () {
-    var key = 'phg_visit_count';
-    var count = parseInt(localStorage.getItem(key) || '842', 10) + 1;
-    localStorage.setItem(key, count);
-    document.getElementById('visit-count').textContent = count.toLocaleString();
-  })();
-</script>
-
 <script src="https://www.paypal.com/sdk/js?client-id=AQvXxaPmRMQk9sfoo9AcSJs26LuWGE2RsUYCzhagWOk6fDXVqOApJBwfHtAYWeaI9rP4K0JRjRaR5_I2&currency=USD&enable-funding=paylater,card"></script>
 <script>
   // ---- Fill these in once, then leave them alone ----

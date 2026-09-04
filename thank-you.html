@@ -68,6 +68,7 @@
 <script>
   var SUPABASE_URL = "https://zarasbzkxjlsiydniitk.supabase.co";
   var FUNCTIONS_BASE = SUPABASE_URL + "/functions/v1";
+  var SUPABASE_ANON_KEY = "sb_publishable_3lDfYDfblJDSnh62F8wHSQ_c789CdX5";
 
   var titleEl = document.getElementById('title');
   var msgEl = document.getElementById('message');
@@ -83,7 +84,11 @@
   } else {
     fetch(FUNCTIONS_BASE + '/get-download-link', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+        'apikey': SUPABASE_ANON_KEY
+      },
       body: JSON.stringify({ orderID: orderID })
     })
       .then(function (res) { return res.json(); })
