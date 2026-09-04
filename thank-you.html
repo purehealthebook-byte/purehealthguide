@@ -60,57 +60,25 @@
     <p id="message">Give us a second while we confirm your payment with PayPal.</p>
 
     <button class="btn" id="download-btn" disabled>Preparing your download…</button>
-    <p class="note">The download link expires 10 minutes after it's generated — if it stops working, just refresh this page to get a new one.</p>
 
     <a href="index.html" class="back">← Back to PureHealthGuide</a>
   </div>
 
 <script>
-  var SUPABASE_URL = "https://zarasbzkxjlsiydniitk.supabase.co";
-  var FUNCTIONS_BASE = SUPABASE_URL + "/functions/v1";
-  var SUPABASE_ANON_KEY = "sb_publishable_3lDfYDfblJDSnh62F8wHSQ_c789CdX5";
+  // Simplified: no payment verification step here — the thank-you page
+  // just shows a permanent download link. Payment already happened
+  // (and got logged) back on the book page via PayPal + capture-paypal-order.
+  var DOWNLOAD_URL = "https://zarasbzkxjlsiydniitk.supabase.co/storage/v1/object/public/private-ebooks/ebooks/never-age-again.pdf";
 
   var titleEl = document.getElementById('title');
   var msgEl = document.getElementById('message');
   var btn = document.getElementById('download-btn');
 
-  var params = new URLSearchParams(window.location.search);
-  var orderID = params.get('order');
-
-  if (!orderID) {
-    titleEl.textContent = "No order found";
-    msgEl.textContent = "It looks like you reached this page without completing a purchase.";
-    btn.style.display = 'none';
-  } else {
-    fetch(FUNCTIONS_BASE + '/get-download-link', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
-        'apikey': SUPABASE_ANON_KEY
-      },
-      body: JSON.stringify({ orderID: orderID })
-    })
-      .then(function (res) { return res.json(); })
-      .then(function (data) {
-        if (data.url) {
-          titleEl.textContent = "Thank you for your purchase!";
-          msgEl.textContent = "Your copy of Never Age Again is ready.";
-          btn.disabled = false;
-          btn.textContent = "Download the ebook (PDF)";
-          btn.onclick = function () { window.location.href = data.url; };
-        } else {
-          titleEl.textContent = "We couldn't verify this order";
-          msgEl.textContent = data.error || "If you just paid, wait a few seconds and refresh this page.";
-          btn.style.display = 'none';
-        }
-      })
-      .catch(function () {
-        titleEl.textContent = "Something went wrong";
-        msgEl.textContent = "Please refresh this page. If it keeps happening, contact us with your order ID: " + orderID;
-        btn.style.display = 'none';
-      });
-  }
+  titleEl.textContent = "Thank you for your purchase!";
+  msgEl.textContent = "Your copy of Never Age Again is ready.";
+  btn.disabled = false;
+  btn.textContent = "Download the ebook (PDF)";
+  btn.onclick = function () { window.location.href = DOWNLOAD_URL; };
 </script>
 
 </body>
