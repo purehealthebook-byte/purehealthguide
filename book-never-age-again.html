@@ -138,15 +138,15 @@
     background: radial-gradient(circle, rgba(200,41,31,0.18) 0%, rgba(200,41,31,0) 65%);
     pointer-events: none;
   }
-  .hero .wrap { position: relative; display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 64px; align-items: center; }
+  .hero .wrap { position: relative; display: grid; grid-template-columns: 1fr; gap: 64px; align-items: center; max-width: 720px; margin: 0 auto; text-align: center; }
   h1.headline { font-family: 'Archivo Black', sans-serif; font-size: clamp(40px, 5.2vw, 64px); line-height: 0.98; letter-spacing: -0.02em; margin-bottom: 24px; }
   h1.headline .accent { color: var(--red); }
-  .hero p.sub { font-size: 18px; color: var(--dim); max-width: 46ch; margin-bottom: 36px; }
-  .price-row { display: flex; align-items: baseline; gap: 14px; margin-bottom: 36px; }
+  .hero p.sub { font-size: 18px; color: var(--dim); max-width: 46ch; margin: 0 auto 36px; }
+  .price-row { display: flex; align-items: baseline; gap: 14px; margin-bottom: 36px; justify-content: center; }
   .price-now { font-family: 'Archivo Black', sans-serif; font-size: 40px; color: var(--white); }
   .price-was { font-size: 20px; color: var(--dim); text-decoration: line-through; }
   .price-off { background: var(--red); color: var(--white); font-size: 13px; font-weight: 700; padding: 5px 10px; border-radius: 4px; }
-  .cta-row { display: flex; gap: 16px; flex-wrap: wrap; }
+  .cta-row { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
   .btn {
     display: inline-flex; align-items: center; gap: 8px;
     padding: 16px 28px; font-size: 15px; font-weight: 600; border-radius: 4px;
@@ -308,13 +308,9 @@
 
       <div class="cta-row" id="buy">
         <div id="paypal-button-container" style="min-width:260px; max-width:320px;"></div>
-        <a href="#inside" class="btn btn-ghost">See what's inside</a>
+        <a href="#inside" class="btn btn-ghost">👇 See what's inside</a>
       </div>
       <p id="paypal-status" style="font-size:13px; color:var(--dim); margin-top:10px;"></p>
-    </div>
-
-    <div class="hero-cover">
-      <img src="cover-book1.png" alt="Never Age Again — PureHealthGuide ebook cover">
     </div>
   </div>
 </header>
