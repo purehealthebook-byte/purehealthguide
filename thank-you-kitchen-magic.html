@@ -59,8 +59,7 @@
     <h1 id="title">Checking your order…</h1>
     <p id="message">Give us a second while we confirm your payment with PayPal.</p>
 
-    <button class="btn" id="download-btn-1" disabled style="margin-bottom:12px;">Preparing your download…</button>
-    <button class="btn" id="download-btn-2" disabled>Preparing your download…</button>
+    <button class="btn" id="download-btn-1" disabled>Preparing your download…</button>
 
     <a href="index.html" class="back">← Back to PureHealthGuide</a>
   </div>
@@ -73,7 +72,6 @@
   var titleEl = document.getElementById('title');
   var msgEl = document.getElementById('message');
   var btn1 = document.getElementById('download-btn-1');
-  var btn2 = document.getElementById('download-btn-2');
 
   var params = new URLSearchParams(window.location.search);
   var orderID = params.get('order');
@@ -82,7 +80,6 @@
     titleEl.textContent = "No order found";
     msgEl.textContent = "It looks like you reached this page without completing a purchase.";
     btn1.style.display = 'none';
-    btn2.style.display = 'none';
   } else {
     fetch(FUNCTIONS_BASE + '/get-download-link', {
       method: 'POST',
@@ -95,30 +92,24 @@
     })
       .then(function (res) { return res.json(); })
       .then(function (data) {
-        if (data.files && data.files.length === 2) {
+        if (data.files && data.files.length === 1) {
           titleEl.textContent = "Thank you for your purchase!";
-          msgEl.textContent = "Your copy of Kitchen Magic — plus the bonus recipe book — is ready. Please download them both:";
+          msgEl.textContent = "Your copy of Kitchen Magic is ready.";
 
           btn1.disabled = false;
           btn1.textContent = data.files[0].label;
           btn1.onclick = function () { window.location.href = data.files[0].url; };
-
-          btn2.disabled = false;
-          btn2.textContent = data.files[1].label;
-          btn2.onclick = function () { window.location.href = data.files[1].url; };
         } else {
           titleEl.textContent = "We couldn't verify this order";
           msgEl.textContent = data.error || "If you just paid, wait a few seconds and refresh this page.";
           btn1.style.display = 'none';
-          btn2.style.display = 'none';
-        }
+              }
       })
       .catch(function () {
         titleEl.textContent = "Something went wrong";
         msgEl.textContent = "Please refresh this page. If it keeps happening, contact us with your order ID: " + orderID;
         btn1.style.display = 'none';
-        btn2.style.display = 'none';
-      });
+          });
   }
 </script>
 
