@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PureHealthGuide — Never Age Again</title>
+<title>The Reset Method — PureHealthGuide</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700&display=swap');
 
@@ -101,16 +101,8 @@
     padding: 26px;
     background: var(--near-black);
     position: relative;
-    text-decoration: none;
-    color: inherit;
-    transition: border-color .2s, transform .15s;
-    cursor: pointer;
   }
-  .series-card:hover { transform: translateY(-2px); }
   .series-card.active { border-color: rgba(200,41,31,0.5); }
-  .series-card.active:hover { border-color: var(--red); }
-  .series-card[aria-disabled="true"] { cursor: default; }
-  .series-card[aria-disabled="true"]:hover { transform: none; border-color: rgba(255,255,255,0.12); }
   .series-flag {
     position: absolute; top: -10px; right: 18px;
     background: var(--red); color: var(--white);
@@ -146,15 +138,15 @@
     background: radial-gradient(circle, rgba(200,41,31,0.18) 0%, rgba(200,41,31,0) 65%);
     pointer-events: none;
   }
-  .hero .wrap { position: relative; display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 64px; align-items: center; }
+  .hero .wrap { position: relative; display: grid; grid-template-columns: 1fr; gap: 64px; align-items: center; max-width: 720px; margin: 0 auto; text-align: center; }
   h1.headline { font-family: 'Archivo Black', sans-serif; font-size: clamp(40px, 5.2vw, 64px); line-height: 0.98; letter-spacing: -0.02em; margin-bottom: 24px; }
   h1.headline .accent { color: var(--red); }
-  .hero p.sub { font-size: 18px; color: var(--dim); max-width: 46ch; margin-bottom: 36px; }
-  .price-row { display: flex; align-items: baseline; gap: 14px; margin-bottom: 36px; }
+  .hero p.sub { font-size: 18px; color: var(--dim); max-width: 46ch; margin: 0 auto 36px; }
+  .price-row { display: flex; align-items: baseline; gap: 14px; margin-bottom: 36px; justify-content: center; }
   .price-now { font-family: 'Archivo Black', sans-serif; font-size: 40px; color: var(--white); }
   .price-was { font-size: 20px; color: var(--dim); text-decoration: line-through; }
   .price-off { background: var(--red); color: var(--white); font-size: 13px; font-weight: 700; padding: 5px 10px; border-radius: 4px; }
-  .cta-row { display: flex; gap: 16px; flex-wrap: wrap; }
+  .cta-row { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
   .btn {
     display: inline-flex; align-items: center; gap: 8px;
     padding: 16px 28px; font-size: 15px; font-weight: 600; border-radius: 4px;
@@ -291,129 +283,108 @@
 
 <nav>
   <div class="wrap">
-    <div class="logo">Pure<span>Health</span>Guide</div>
+    <a href="index.html" class="logo">Pure<span>Health</span>Guide</a>
     <div class="nav-links">
-      <a href="#series">The Series</a>
+      <a href="index.html">← All Guides</a>
+      <a href="#inside">What's Inside</a>
+      <a href="#chapters">Chapters</a>
     </div>
-    <a href="book-never-age-again.html" class="btn btn-primary" style="padding:10px 20px; font-size:14px;">Get the Guide</a>
+    <a href="#buy" class="btn btn-primary" style="padding:10px 20px; font-size:14px;">Get the Guide</a>
   </div>
 </nav>
 
-<div class="statbar">
+<header class="hero">
   <div class="wrap">
-    <div class="live-stats">
-      <span><strong id="fb-count">18K</strong> followers</span>
+    <div class="hero-copy">
+      <div class="kicker">A PUREHEALTHGUIDE EBOOK</div>
+      <h1 class="headline">The Reset<br>Method<span class="accent">.</span></h1>
+      <p class="sub">Small daily resets for mind, body, and habits — plus a full bonus book covering mental health, physical health, cooking, self-discipline, and personal growth.</p>
+
+      <div class="price-row">
+        <span class="price-now">$19</span>
+        <span class="price-was">$79</span>
+        <span class="price-off">76% OFF</span>
+      </div>
+
+      <div class="cta-row" id="buy">
+        <div id="paypal-button-container" style="min-width:260px; max-width:320px;"></div>
+        <a href="#inside" class="btn btn-ghost">👇 See what's inside</a>
+      </div>
+      <p id="paypal-status" style="font-size:13px; color:var(--dim); margin-top:10px;"></p>
     </div>
-    <div class="social-links">
-      <a href="#" target="_blank" rel="noopener" aria-label="YouTube">▶</a>
-      <a href="#" target="_blank" rel="noopener" aria-label="TikTok">♪</a>
-    </div>
+  </div>
+</header>
+
+<div class="trust">
+  <div class="wrap">
+    <span><strong>50 pages</strong> across two books</span>
+    <span><strong>8 chapters</strong> — mind, body, and habits</span>
+    <span><strong>30+ daily habits</strong> — mental & physical</span>
+    <span><strong>2 books</strong> for the price of one</span>
   </div>
 </div>
 
-<section id="series">
+<section id="inside">
   <div class="wrap">
     <div class="section-head">
-      <div class="kicker">THE PUREHEALTHGUIDE SERIES</div>
-      <h2>Four guides. One food-first approach.</h2>
-      <p>Never Age Again is the first release. The rest of the series is in progress.</p>
+      <div class="kicker">THE PROBLEM</div>
+      <h2>You've tried the big overhaul. It didn't stick.</h2>
     </div>
-    <div class="series-grid">
-      <a href="book-never-age-again.html" class="series-card active">
-        <span class="series-flag">NEW</span>
-        <div class="series-icon">🔥</div>
-        <div class="series-body">
-          <div class="series-stat">1.2K+ READERS</div>
-          <div class="series-meta">
-            <span class="badge live">BUY NOW</span>
-            <span class="price-was">$30</span>
-            <span class="price-now">$19</span>
-          </div>
-          <div class="series-title-row">
-            <h4>Never Age Again</h4>
-            <span class="series-link">↗</span>
-          </div>
-          <p>Anti-aging & clear skin, from the kitchen.</p>
-        </div>
-      </a>
-
-      <a href="book-reset-method.html" class="series-card active">
-        <div class="series-icon">🌱</div>
-        <div class="series-body">
-          <div class="series-meta">
-            <span class="badge live">BUY NOW</span>
-            <span class="price-was">$79</span>
-            <span class="price-now">$19</span>
-          </div>
-          <div class="series-title-row"><h4>The Reset Method</h4><span class="series-link">↗</span></div>
-          <p>Small daily resets for mind, body, and lasting habits.</p>
-        </div>
-      </a>
-
-      <a href="book-kitchen-magic.html" class="series-card active">
-        <div class="series-icon">🍳</div>
-        <div class="series-body">
-          <div class="series-meta">
-            <span class="badge live">BUY NOW</span>
-            <span class="price-was">$79</span>
-            <span class="price-now">$19</span>
-          </div>
-          <div class="series-title-row"><h4>Kitchen Magic</h4><span class="series-link">↗</span></div>
-          <p>Restaurant secrets and homemade creations, made in your kitchen.</p>
-        </div>
-      </a>
-
-      <a href="book-blend-bible.html" class="series-card active">
-        <div class="series-icon">🥤</div>
-        <div class="series-body">
-          <div class="series-meta">
-            <span class="badge live">BUY NOW</span>
-            <span class="price-was">$79</span>
-            <span class="price-now">$19</span>
-          </div>
-          <div class="series-title-row"><h4>The Blend Bible</h4><span class="series-link">↗</span></div>
-          <p>Your guide to being healthy — food, smoothies, and daily habits.</p>
-        </div>
-      </a>
+    <div class="contrast">
+      <div class="side">
+        <div class="mark no">✕</div>
+        <div><div class="label-big">All-or-nothing</div><div class="label-small">total lifestyle overhauls that burn out fast</div></div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="side">
+        <div class="mark yes">✓</div>
+        <div><div class="label-big">Small resets</div><div class="label-small">daily habits that actually last</div></div>
+      </div>
     </div>
-  </div>
-</section>
-
-<section class="mission" style="border-top:1px solid rgba(255,255,255,0.08);">
-  <div class="wrap">
-    <div class="logo">Pure<span style="color:var(--red)">Health</span>Guide</div>
-    <p>We believe real health advice should be plain, provable, and something you can act on today — not another product to buy. <span class="accent-line">PureHealthGuide turns everyday food into your most reliable wellness tool</span>, one guide at a time.</p>
   </div>
 </section>
 
 <section>
+  <div class="wrap preview">
+    <div>
+      <div class="kicker">WHAT'S INSIDE</div>
+      <h2>Two books, one purchase.</h2>
+    </div>
+    <div class="preview-list">
+      <div class="preview-item"><div class="icon">—</div><div><h4>8 core reset chapters</h4><p>Morning routine, food, movement, sleep, mental clarity, stress, and lasting habits.</p></div></div>
+      <div class="preview-item"><div class="icon">—</div><div><h4>Small, repeatable resets</h4><p>No drastic overhauls — just daily habits designed to actually stick.</p></div></div>
+      <div class="preview-item"><div class="icon">—</div><div><h4>30+ habits across 5 categories</h4><p>Mental health, physical health, cooking, self-discipline, and personal growth.</p></div></div>
+      <div class="preview-item"><div class="icon">—</div><div><h4>Bonus: full daily checklist</h4><p>A printable-style daily checklist to track it all — included free.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="chapters">
   <div class="wrap">
     <div class="section-head">
-      <div class="kicker">WHAT WE FOCUS ON</div>
-      <h2>The four pillars behind every guide</h2>
-      <p>PureHealthGuide is built around the everyday domains that actually move the needle on how you look and feel.</p>
+      <div class="kicker">CHAPTER GUIDE</div>
+      <h2>Eight chapters, plus a full bonus book.</h2>
     </div>
-    <div class="pillars-grid">
-      <div class="pillar-card">
-        <div class="pillar-icon">✦</div>
-        <h4>Skin & Aging</h4>
-        <p>Slowing visible aging through what you eat, not what you apply.</p>
-      </div>
-      <div class="pillar-card">
-        <div class="pillar-icon">◐</div>
-        <h4>Nutrition</h4>
-        <p>Simple, sustainable eating patterns built on real food.</p>
-      </div>
-      <div class="pillar-card">
-        <div class="pillar-icon">△</div>
-        <h4>Home Cooking</h4>
-        <p>Restaurant-quality meals made from your own kitchen.</p>
-      </div>
-      <div class="pillar-card">
-        <div class="pillar-icon">◆</div>
-        <h4>Daily Habits</h4>
-        <p>Small, repeatable routines that compound over time.</p>
-      </div>
+    <div class="chapter-grid">
+      <div class="chapter-cell"><div class="chapter-num">01</div><h3>Introduction</h3><p>Small resets over big overhauls.</p></div>
+      <div class="chapter-cell"><div class="chapter-num">02</div><h3>The Morning Reset</h3><p>How your morning shapes your day.</p></div>
+      <div class="chapter-cell"><div class="chapter-num">03</div><h3>Eating for Energy</h3><p>Not restriction, just real fuel.</p></div>
+      <div class="chapter-cell"><div class="chapter-num">04</div><h3>Movement That Sticks</h3><p>Exercise you'll actually keep doing.</p></div>
+      <div class="chapter-cell"><div class="chapter-num">05</div><h3>The Sleep Reset</h3><p>Why sleep is the most underrated lever.</p></div>
+      <div class="chapter-cell"><div class="chapter-num">06</div><h3>Mental Clarity & Focus</h3><p>Journaling, single-tasking, boundaries.</p></div>
+      <div class="chapter-cell"><div class="chapter-num">07</div><h3>Stress & Emotional Reset</h3><p>Daily tools to manage stress before it manages you.</p></div>
+      <div class="chapter-cell"><div class="chapter-num">08</div><h3>Building Habits That Last</h3><p>Systems over willpower.</p></div>
+      <div class="chapter-cell"><div class="chapter-num">B</div><h3>Bonus Book</h3><p>30+ habits: mental health, physical health, cooking, discipline, growth.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="final-cta">
+  <div class="wrap">
+    <h2>Stop starting over. Start resetting, one small habit at a time.</h2>
+    <p>Get both books — 8 core chapters plus 30+ bonus habits — for less than a single self-help book.</p>
+    <div class="cta-row" style="justify-content:center;">
+      <a href="#buy" class="btn btn-primary">Buy the ebook — $19</a>
     </div>
   </div>
 </section>
@@ -422,7 +393,7 @@
   <div class="wrap">
     <div class="footer-top">
       <div class="footer-tagline">
-        <div class="logo">Pure<span style="color:var(--red)">Health</span>Guide</div>
+        <a href="index.html" class="logo">Pure<span style="color:var(--red)">Health</span>Guide</a>
         <p>Your path to wellness starts here.</p>
       </div>
       <div class="footer-social">
@@ -444,6 +415,62 @@
     </div>
   </div>
 </footer>
+
+<script src="https://www.paypal.com/sdk/js?client-id=AQvXxaPmRMQk9sfoo9AcSJs26LuWGE2RsUYCzhagWOk6fDXVqOApJBwfHtAYWeaI9rP4K0JRjRaR5_I2&currency=USD&enable-funding=paylater,card"></script>
+<script>
+  // ---- Fill these in once, then leave them alone ----
+  var SUPABASE_URL = "https://zarasbzkxjlsiydniitk.supabase.co";
+  var FUNCTIONS_BASE = SUPABASE_URL + "/functions/v1";
+  var SUPABASE_ANON_KEY = "sb_publishable_3lDfYDfblJDSnh62F8wHSQ_c789CdX5";
+  var PRODUCT_ID = "reset-method";
+  // -----------------------------------------------------
+
+  var statusEl = document.getElementById('paypal-status');
+
+  paypal.Buttons({
+    style: { layout: 'vertical', color: 'black', shape: 'rect', label: 'pay' },
+
+    createOrder: function () {
+      statusEl.textContent = '';
+      return fetch(FUNCTIONS_BASE + '/create-paypal-order', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+          'apikey': SUPABASE_ANON_KEY
+        },
+        body: JSON.stringify({ product: PRODUCT_ID })
+      })
+        .then(function (res) { return res.json(); })
+        .then(function (data) { return data.id; });
+    },
+
+    onApprove: function (data) {
+      statusEl.textContent = 'Confirming your payment…';
+      return fetch(FUNCTIONS_BASE + '/capture-paypal-order', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+          'apikey': SUPABASE_ANON_KEY
+        },
+        body: JSON.stringify({ orderID: data.orderID })
+      })
+        .then(function (res) { return res.json(); })
+        .then(function (result) {
+          if (result.success) {
+            window.location.href = 'thank-you-reset-method.html?order=' + encodeURIComponent(data.orderID);
+          } else {
+            statusEl.textContent = 'Payment did not complete. Please try again.';
+          }
+        });
+    },
+
+    onError: function () {
+      statusEl.textContent = 'Something went wrong. Please try again.';
+    }
+  }).render('#paypal-button-container');
+</script>
 
 </body>
 </html>
