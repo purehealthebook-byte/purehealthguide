@@ -65,20 +65,51 @@
   </div>
 
 <script>
-  // Simplified: no payment verification step here — the thank-you page
-  // just shows a permanent download link. Payment already happened
-  // (and got logged) back on the book page via PayPal + capture-paypal-order.
-  var DOWNLOAD_URL = "https://zarasbzkxjlsiydniitk.supabase.co/storage/v1/object/public/ebooks/never-age-again.pdf";
+  var SUPABASE_URL = "https://zarasbzkxjlsiydniitk.supabase.co";
+  var FUNCTIONS_BASE = SUPABASE_URL + "/functions/v1";
+  var SUPABASE_ANON_KEY = "sb_publishable_3lDfYDfblJDSnh62F8wHSQ_c789CdX5";
 
   var titleEl = document.getElementById('title');
   var msgEl = document.getElementById('message');
   var btn = document.getElementById('download-btn');
 
-  titleEl.textContent = "Thank you for your purchase!";
-  msgEl.textContent = "Your copy of Never Age Again is ready.";
-  btn.disabled = false;
-  btn.textContent = "Download the ebook (PDF)";
-  btn.onclick = function () { window.location.href = DOWNLOAD_URL; };
+  var params = new URLSearchParams(window.location.search);
+  var orderID = params.get('order');
+
+  if (!orderID) {
+    titleEl.textContent = "No order found";
+    msgEl.textContent = "It looks like you reached this page without completing a purchase.";
+    btn.style.display = 'none';
+  } else {
+    fetch(FUNCTIONS_BASE + '/get-download-link', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+        'apikey': SUPABASE_ANON_KEY
+      },
+      body: JSON.stringify({ orderID: orderID })
+    })
+      .then(function (res) { return res.json(); })
+      .then(function (data) {
+        if (data.files && data.files.length === 1) {
+          titleEl.textContent = "Thank you for your purchase!";
+          msgEl.textContent = "Your copy of Never Age Again is ready.";
+          btn.disabled = false;
+          btn.textContent = data.files[0].label;
+          btn.onclick = function () { window.location.href = data.files[0].url; };
+        } else {
+          titleEl.textContent = "We couldn't verify this order";
+          msgEl.textContent = data.error || "If you just paid, wait a few seconds and refresh this page.";
+          btn.style.display = 'none';
+        }
+      })
+      .catch(function () {
+        titleEl.textContent = "Something went wrong";
+        msgEl.textContent = "Please refresh this page. If it keeps happening, contact us with your order ID: " + orderID;
+        btn.style.display = 'none';
+      });
+  }
 </script>
 
 </body>
