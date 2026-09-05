@@ -59,7 +59,8 @@
     <h1 id="title">Checking your order…</h1>
     <p id="message">Give us a second while we confirm your payment with PayPal.</p>
 
-    <button class="btn" id="download-btn" disabled>Preparing your download…</button>
+    <button class="btn" id="download-btn-1" disabled style="margin-bottom:12px;">Preparing your download…</button>
+    <button class="btn" id="download-btn-2" disabled>Preparing your download…</button>
 
     <a href="index.html" class="back">← Back to PureHealthGuide</a>
   </div>
@@ -75,28 +76,19 @@
 
   var titleEl = document.getElementById('title');
   var msgEl = document.getElementById('message');
-  var btn = document.getElementById('download-btn');
+  var btn1 = document.getElementById('download-btn-1');
+  var btn2 = document.getElementById('download-btn-2');
 
   titleEl.textContent = "Thank you for your purchase!";
   msgEl.textContent = "Your copy of Kitchen Magic — plus the bonus recipe book — is ready.";
-  btn.disabled = false;
-  btn.textContent = "Download Kitchen Magic (2 files)";
 
-  function triggerDownload(url) {
-    var a = document.createElement('a');
-    a.href = url;
-    a.download = '';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-  }
+  btn1.disabled = false;
+  btn1.textContent = "Download Kitchen Magic";
+  btn1.onclick = function () { window.location.href = FILE_1; };
 
-  btn.onclick = function () {
-    triggerDownload(FILE_1);
-    setTimeout(function () { triggerDownload(FILE_2); }, 600);
-    btn.textContent = "Downloading both files…";
-    setTimeout(function () { btn.textContent = "Download again"; }, 2000);
-  };
+  btn2.disabled = false;
+  btn2.textContent = "Download Bonus Recipes";
+  btn2.onclick = function () { window.location.href = FILE_2; };
 </script>
 
 </body>
