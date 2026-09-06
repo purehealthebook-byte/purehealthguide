@@ -308,6 +308,7 @@
 
       <div class="cta-row" id="buy">
         <div id="paypal-button-container" style="min-width:260px; max-width:320px;"></div>
+        <button id="paymongo-btn" class="btn" style="width:100%; margin-top:12px; background:#0a3d2e; color:white;">Pay with Card</button>
         <a href="#inside" class="btn btn-ghost">👇 See what's inside</a>
       </div>
       <p id="paypal-status" style="font-size:13px; color:var(--dim); margin-top:10px;"></p>
@@ -467,6 +468,38 @@
       statusEl.textContent = 'Something went wrong. Please try again.';
     }
   }).render('#paypal-button-container');
+
+
+  // ---- PayMongo (GCash / Card) ----
+  document.getElementById('paymongo-btn').addEventListener('click', function () {
+    var pmBtn = this;
+    pmBtn.disabled = true;
+    pmBtn.textContent = 'Redirecting to secure checkout…';
+    fetch(FUNCTIONS_BASE + '/create-paymongo-checkout', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+        'apikey': SUPABASE_ANON_KEY
+      },
+      body: JSON.stringify({ product: PRODUCT_ID })
+    })
+      .then(function (res) { return res.json(); })
+      .then(function (data) {
+        if (data.checkoutUrl) {
+          window.location.href = data.checkoutUrl;
+        } else {
+          pmBtn.disabled = false;
+          pmBtn.textContent = 'Pay with Card';
+          statusEl.textContent = data.error || 'Something went wrong starting checkout.';
+        }
+      })
+      .catch(function () {
+        pmBtn.disabled = false;
+        pmBtn.textContent = 'Pay with Card';
+        statusEl.textContent = 'Something went wrong. Please try again.';
+      });
+  });
 </script>
 
 </body>
