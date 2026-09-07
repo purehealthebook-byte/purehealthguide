@@ -1,0 +1,354 @@
+<!--
+  CHECKOUT SECTION v3 — full country list, single MM/YY expiry field,
+  softer copy, more polished visual design. Same PayMongo backend as
+  before (create-payment-intent-usd.ts + paymongo-webhook.ts).
+
+  Paste this where checkout should appear on each book-*.html page.
+  Set PRODUCT_ID, PRODUCT_NAME, PRICE_CENTS at the top of the script.
+-->
+
+<style>
+  #checkout-section-v3 { padding: 64px 0; }
+  #checkout-section-v3 .checkout-grid {
+    display: grid; grid-template-columns: 1.6fr 1fr; gap: 24px; align-items: start;
+  }
+  @media (max-width: 860px) {
+    #checkout-section-v3 .checkout-grid { grid-template-columns: 1fr; }
+  }
+  #checkout-section-v3 .panel {
+    background: #ffffff; border-radius: 14px; padding: 32px;
+    border: 1px solid #ececec; color: #1a1a1a;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.35);
+  }
+  #checkout-section-v3 h3 {
+    font-size: 18px; font-weight: 700; margin-bottom: 4px; color: #111;
+    display: flex; align-items: center; gap: 8px;
+  }
+  #checkout-section-v3 .panel-sub { font-size: 13px; color: #6b6b6b; margin-bottom: 22px; }
+  #checkout-section-v3 label { font-size: 13px; font-weight: 600; color: #333; display: block; margin-bottom: 6px; }
+  #checkout-section-v3 .field-row { display: flex; gap: 12px; }
+  #checkout-section-v3 .field-row > div { flex: 1; }
+  #checkout-section-v3 input, #checkout-section-v3 select {
+    width: 100%; padding: 12px 14px; margin-bottom: 16px;
+    border-radius: 8px; border: 1px solid #d9d9d9; background: #fafafa;
+    color: #1a1a1a; font-size: 14px; font-family: inherit;
+    transition: border-color .15s, background .15s;
+  }
+  #checkout-section-v3 input:focus, #checkout-section-v3 select:focus {
+    outline: none; border-color: #c8291f; background: #fff;
+  }
+  #checkout-section-v3 .card-brands { font-size: 12px; color: #999; margin: -10px 0 16px; }
+  #checkout-section-v3 .order-line {
+    display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 10px; color: #333;
+  }
+  #checkout-section-v3 .order-total {
+    display: flex; justify-content: space-between; font-size: 18px; font-weight: 700;
+    padding-top: 16px; margin-top: 8px; border-top: 1px solid #eee; color: #111;
+  }
+  #checkout-section-v3 .pay-btn {
+    width: 100%; margin-top: 20px; padding: 16px; border: none; border-radius: 8px;
+    background: #c8291f; color: #fff; font-size: 15px; font-weight: 700; cursor: pointer;
+    transition: background .15s, transform .1s;
+  }
+  #checkout-section-v3 .pay-btn:hover { background: #e2352a; transform: translateY(-1px); }
+  #checkout-section-v3 .pay-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+  #checkout-section-v3 .status-msg { font-size: 13px; color: #b3261e; margin-top: 10px; text-align: center; min-height: 16px; }
+  #checkout-section-v3 .secure-note {
+    font-size: 12px; color: #888; text-align: center; margin-top: 16px;
+    display: flex; align-items: center; justify-content: center; gap: 6px; line-height: 1.5;
+  }
+  #checkout-section-v3 .lock-icon { flex-shrink: 0; }
+  #checkout-section-v3 .cover-thumb {
+    width: 56px; height: 56px; border-radius: 6px; background: #f0f0f0;
+    display: flex; align-items: center; justify-content: center; font-size: 20px; color: #c8291f;
+    flex-shrink: 0;
+  }
+  #checkout-section-v3 .product-row { display: flex; gap: 14px; align-items: center; margin-bottom: 20px; }
+  #checkout-section-v3 .product-row h4 { font-size: 15px; font-weight: 600; margin-bottom: 2px; }
+  #checkout-section-v3 .product-row p { font-size: 12px; color: #888; }
+</style>
+
+<section id="checkout-section-v3">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker">CHECKOUT</div>
+      <h2>Complete your order</h2>
+    </div>
+
+    <div class="checkout-grid" style="margin-top:24px;">
+
+      <!-- Left: buyer + billing info -->
+      <div class="panel">
+        <h3>📦 Billing Information</h3>
+        <div class="panel-sub">Enter your details below.</div>
+
+        <label>Full Name</label>
+        <input id="co-name" type="text" placeholder="Jane Doe">
+
+        <label>Email</label>
+        <input id="co-email" type="email" placeholder="jane@email.com">
+
+        <label>Address</label>
+        <input id="co-address" type="text" placeholder="123 Main Street">
+
+        <div class="field-row">
+          <div>
+            <label>City</label>
+            <input id="co-city" type="text" placeholder="New York">
+          </div>
+          <div>
+            <label>Postal Code</label>
+            <input id="co-postal" type="text" placeholder="10001">
+          </div>
+        </div>
+
+        <label>Country or Region</label>
+        <select id="co-country"></select>
+
+        <h3 style="margin-top:12px;">💳 Payment Method</h3>
+        <div class="panel-sub">Enter your card details below.</div>
+        <div class="card-brands">Visa · Mastercard accepted</div>
+
+        <label>Card Number</label>
+        <input id="co-card-number" type="text" inputmode="numeric" placeholder="1234 1234 1234 1234">
+
+        <div class="field-row">
+          <div>
+            <label>Expiration Date</label>
+            <input id="co-exp" type="text" inputmode="numeric" placeholder="MM/YY" maxlength="5">
+          </div>
+          <div>
+            <label>CVC</label>
+            <input id="co-cvc" type="text" inputmode="numeric" placeholder="123" maxlength="4">
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: order summary -->
+      <div class="panel">
+        <h3>🧾 Order Summary</h3>
+        <div class="product-row">
+          <div class="cover-thumb">📖</div>
+          <div>
+            <h4 id="co-product-name"></h4>
+            <p>Digital download — instant access</p>
+          </div>
+        </div>
+
+        <div class="order-line"><span>Subtotal</span><span id="co-subtotal"></span></div>
+        <div class="order-line"><span>Delivery</span><span style="color:#1a8f4c; font-weight:600;">Instant (digital)</span></div>
+        <div class="order-total"><span>Total</span><span id="co-total"></span></div>
+
+        <button id="co-pay-btn" class="pay-btn">Pay Now Online</button>
+        <p id="co-status" class="status-msg"></p>
+        <p class="secure-note">
+          <span class="lock-icon">🔒</span>
+          Your payment is handled securely by PayMongo, a licensed Philippine payment processor — your card details go straight to them over an encrypted connection and never pass through or sit on our servers.
+        </p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script>
+(function () {
+  var SUPABASE_URL = "https://zarasbzkxjlsiydniitk.supabase.co";
+  var FUNCTIONS_BASE = SUPABASE_URL + "/functions/v1";
+  var SUPABASE_ANON_KEY = "sb_publishable_3lDfYDfblJDSnh62F8wHSQ_c789CdX5";
+  var PAYMONGO_PUBLIC_KEY = "pk_test_vxzfv8W4cVGwMyWSaUmU5r9X"; // <-- replace with your real public key
+
+  var PRODUCT_ID = "reset-method";       // <-- change per book page
+  var PRODUCT_NAME = "The Reset Method"; // <-- change per book page
+  var PRICE_CENTS = 1999;                // <-- $19.99 — change per book price
+
+  // Full country list (name -> ISO code), used to populate the dropdown.
+  var COUNTRIES = [
+    ["Afghanistan","AF"],["Albania","AL"],["Algeria","DZ"],["Andorra","AD"],["Angola","AO"],
+    ["Argentina","AR"],["Armenia","AM"],["Australia","AU"],["Austria","AT"],["Azerbaijan","AZ"],
+    ["Bahamas","BS"],["Bahrain","BH"],["Bangladesh","BD"],["Barbados","BB"],["Belarus","BY"],
+    ["Belgium","BE"],["Belize","BZ"],["Benin","BJ"],["Bhutan","BT"],["Bolivia","BO"],
+    ["Bosnia and Herzegovina","BA"],["Botswana","BW"],["Brazil","BR"],["Brunei","BN"],["Bulgaria","BG"],
+    ["Burkina Faso","BF"],["Burundi","BI"],["Cambodia","KH"],["Cameroon","CM"],["Canada","CA"],
+    ["Cape Verde","CV"],["Chad","TD"],["Chile","CL"],["China","CN"],["Colombia","CO"],
+    ["Costa Rica","CR"],["Croatia","HR"],["Cuba","CU"],["Cyprus","CY"],["Czech Republic","CZ"],
+    ["Denmark","DK"],["Djibouti","DJ"],["Dominican Republic","DO"],["Ecuador","EC"],["Egypt","EG"],
+    ["El Salvador","SV"],["Estonia","EE"],["Eswatini","SZ"],["Ethiopia","ET"],["Fiji","FJ"],
+    ["Finland","FI"],["France","FR"],["Gabon","GA"],["Gambia","GM"],["Georgia","GE"],
+    ["Germany","DE"],["Ghana","GH"],["Greece","GR"],["Guatemala","GT"],["Guinea","GN"],
+    ["Guyana","GY"],["Haiti","HT"],["Honduras","HN"],["Hong Kong","HK"],["Hungary","HU"],
+    ["Iceland","IS"],["India","IN"],["Indonesia","ID"],["Iran","IR"],["Iraq","IQ"],
+    ["Ireland","IE"],["Israel","IL"],["Italy","IT"],["Jamaica","JM"],["Japan","JP"],
+    ["Jordan","JO"],["Kazakhstan","KZ"],["Kenya","KE"],["Kuwait","KW"],["Kyrgyzstan","KG"],
+    ["Laos","LA"],["Latvia","LV"],["Lebanon","LB"],["Lesotho","LS"],["Liberia","LR"],
+    ["Libya","LY"],["Liechtenstein","LI"],["Lithuania","LT"],["Luxembourg","LU"],["Madagascar","MG"],
+    ["Malawi","MW"],["Malaysia","MY"],["Maldives","MV"],["Mali","ML"],["Malta","MT"],
+    ["Mauritania","MR"],["Mauritius","MU"],["Mexico","MX"],["Moldova","MD"],["Monaco","MC"],
+    ["Mongolia","MN"],["Montenegro","ME"],["Morocco","MA"],["Mozambique","MZ"],["Myanmar","MM"],
+    ["Namibia","NA"],["Nepal","NP"],["Netherlands","NL"],["New Zealand","NZ"],["Nicaragua","NI"],
+    ["Niger","NE"],["Nigeria","NG"],["North Macedonia","MK"],["Norway","NO"],["Oman","OM"],
+    ["Pakistan","PK"],["Panama","PA"],["Papua New Guinea","PG"],["Paraguay","PY"],["Peru","PE"],
+    ["Philippines","PH"],["Poland","PL"],["Portugal","PT"],["Qatar","QA"],["Romania","RO"],
+    ["Russia","RU"],["Rwanda","RW"],["Saudi Arabia","SA"],["Senegal","SN"],["Serbia","RS"],
+    ["Singapore","SG"],["Slovakia","SK"],["Slovenia","SI"],["South Africa","ZA"],["South Korea","KR"],
+    ["Spain","ES"],["Sri Lanka","LK"],["Sudan","SD"],["Sweden","SE"],["Switzerland","CH"],
+    ["Syria","SY"],["Taiwan","TW"],["Tajikistan","TJ"],["Tanzania","TZ"],["Thailand","TH"],
+    ["Togo","TG"],["Trinidad and Tobago","TT"],["Tunisia","TN"],["Turkey","TR"],["Turkmenistan","TM"],
+    ["Uganda","UG"],["Ukraine","UA"],["United Arab Emirates","AE"],["United Kingdom","GB"],
+    ["United States","US"],["Uruguay","UY"],["Uzbekistan","UZ"],["Venezuela","VE"],["Vietnam","VN"],
+    ["Yemen","YE"],["Zambia","ZM"],["Zimbabwe","ZW"]
+  ];
+
+  var countrySelect = document.getElementById('co-country');
+  var placeholder = document.createElement('option');
+  placeholder.value = ""; placeholder.textContent = "Select your country";
+  countrySelect.appendChild(placeholder);
+  COUNTRIES.forEach(function (c) {
+    var opt = document.createElement('option');
+    opt.value = c[1]; opt.textContent = c[0];
+    countrySelect.appendChild(opt);
+  });
+
+  document.getElementById('co-product-name').textContent = PRODUCT_NAME;
+  document.getElementById('co-subtotal').textContent = '$' + (PRICE_CENTS / 100).toFixed(2);
+  document.getElementById('co-total').textContent = '$' + (PRICE_CENTS / 100).toFixed(2);
+
+  // Auto-format the expiry field as MM/YY while typing.
+  var expInput = document.getElementById('co-exp');
+  expInput.addEventListener('input', function () {
+    var digits = expInput.value.replace(/\D/g, '').slice(0, 4);
+    if (digits.length >= 3) {
+      expInput.value = digits.slice(0, 2) + '/' + digits.slice(2);
+    } else {
+      expInput.value = digits;
+    }
+  });
+
+  var statusEl = document.getElementById('co-status');
+  var payBtn = document.getElementById('co-pay-btn');
+
+  function paymongoAuthHeader() {
+    return "Basic " + btoa(PAYMONGO_PUBLIC_KEY + ":");
+  }
+
+  function getThankYouPage(product) {
+    var pages = {
+      'never-age-again': 'thank-you.html',
+      'kitchen-magic': 'thank-you-kitchen-magic.html',
+      'reset-method': 'thank-you-reset-method.html',
+      'blend-bible': 'thank-you-blend-bible.html'
+    };
+    return pages[product];
+  }
+
+  payBtn.addEventListener('click', function () {
+    var name = document.getElementById('co-name').value.trim();
+    var email = document.getElementById('co-email').value.trim();
+    var address = document.getElementById('co-address').value.trim();
+    var city = document.getElementById('co-city').value.trim();
+    var postal = document.getElementById('co-postal').value.trim();
+    var country = countrySelect.value;
+    var cardNumber = document.getElementById('co-card-number').value.replace(/\s+/g, '');
+    var cvc = document.getElementById('co-cvc').value.trim();
+
+    var expParts = expInput.value.split('/');
+    var expMonth = parseInt(expParts[0], 10);
+    var expYearShort = parseInt(expParts[1], 10);
+    var expYear = expYearShort ? (2000 + expYearShort) : NaN; // "29" -> 2029
+
+    if (!name || !email || !address || !city || !postal || !country) {
+      statusEl.textContent = 'Please fill in all billing fields.';
+      return;
+    }
+    if (!cardNumber || !expMonth || !expYear || !cvc) {
+      statusEl.textContent = 'Please fill in all card fields (expiry as MM/YY).';
+      return;
+    }
+
+    payBtn.disabled = true;
+    payBtn.textContent = 'Processing…';
+    statusEl.textContent = '';
+
+    var intentId, clientKey, orderRef;
+
+    fetch(FUNCTIONS_BASE + '/create-payment-intent-usd', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+        'apikey': SUPABASE_ANON_KEY
+      },
+      body: JSON.stringify({ product: PRODUCT_ID, buyerName: name, buyerEmail: email })
+    })
+      .then(function (res) { return res.json(); })
+      .then(function (data) {
+        if (!data.intentId) throw new Error(data.error || 'Could not start payment');
+        intentId = data.intentId;
+        clientKey = data.clientKey;
+        orderRef = data.ref;
+
+        return fetch('https://api.paymongo.com/v1/payment_methods', {
+          method: 'POST',
+          headers: { 'Authorization': paymongoAuthHeader(), 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            data: {
+              attributes: {
+                type: 'card',
+                details: { card_number: cardNumber, exp_month: expMonth, exp_year: expYear, cvc: cvc },
+                billing: {
+                  name: name,
+                  email: email,
+                  address: { line1: address, city: city, postal_code: postal, country: country }
+                }
+              }
+            }
+          })
+        });
+      })
+      .then(function (res) { return res.json(); })
+      .then(function (pmData) {
+        if (!pmData.data) throw new Error((pmData.errors && pmData.errors[0] && pmData.errors[0].detail) || 'Invalid card details');
+        var paymentMethodId = pmData.data.id;
+
+        return fetch('https://api.paymongo.com/v1/payment_intents/' + intentId + '/attach', {
+          method: 'POST',
+          headers: { 'Authorization': paymongoAuthHeader(), 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            data: {
+              attributes: {
+                payment_method: paymentMethodId,
+                client_key: clientKey,
+                return_url: window.location.href.split('?')[0] + '?usd_return=1&order=' + orderRef
+              }
+            }
+          })
+        });
+      })
+      .then(function (res) { return res.json(); })
+      .then(function (attachData) {
+        var status = attachData && attachData.data && attachData.data.attributes && attachData.data.attributes.status;
+        var nextAction = attachData && attachData.data && attachData.data.attributes && attachData.data.attributes.next_action;
+
+        if (status === 'succeeded') {
+          window.location.href = getThankYouPage(PRODUCT_ID) + '?order=' + orderRef;
+        } else if (nextAction && nextAction.redirect && nextAction.redirect.url) {
+          window.location.href = nextAction.redirect.url;
+        } else {
+          statusEl.textContent = (attachData.errors && attachData.errors[0] && attachData.errors[0].detail) || 'Payment could not be completed.';
+          payBtn.disabled = false;
+          payBtn.textContent = 'Pay Now Online';
+        }
+      })
+      .catch(function (err) {
+        statusEl.textContent = err.message || 'Something went wrong. Please try again.';
+        payBtn.disabled = false;
+        payBtn.textContent = 'Pay Now Online';
+      });
+  });
+
+  var params = new URLSearchParams(window.location.search);
+  if (params.get('usd_return') === '1' && params.get('order')) {
+    window.location.href = getThankYouPage(PRODUCT_ID) + '?order=' + params.get('order');
+  }
+})();
+</script>
