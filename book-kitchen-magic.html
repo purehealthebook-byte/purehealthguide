@@ -324,6 +324,151 @@
   </div>
 </div>
 
+<section id="reviews-section">
+  <div class="wrap">
+    <div class="section-head" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
+      <div>
+        <div class="kicker">CUSTOMER REVIEWS</div>
+        <h2 id="reviews-heading">Customer reviews</h2>
+      </div>
+      <div id="carousel-nav" style="display:flex; align-items:center; gap:10px; font-size:14px; color:var(--dim);">
+        <span id="page-indicator">1/1</span>
+        <button id="prev-page" class="review-nav-btn" aria-label="Previous">‹</button>
+        <button id="next-page" class="review-nav-btn" aria-label="Next">›</button>
+      </div>
+    </div>
+
+    <div id="reviews-carousel" style="display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:12px;"></div>
+
+    <button id="view-all-reviews" class="btn btn-ghost" style="margin-top:20px;">View all reviews</button>
+  </div>
+</section>
+
+<!-- Modal -->
+<div id="reviews-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:100; align-items:center; justify-content:center; padding:24px;">
+  <div style="background:var(--near-black); border-radius:10px; max-width:640px; width:100%; max-height:80vh; display:flex; flex-direction:column; border:1px solid rgba(255,255,255,0.1);">
+    <div style="display:flex; align-items:center; justify-content:space-between; padding:20px 24px; border-bottom:1px solid rgba(255,255,255,0.1);">
+      <h3 id="modal-title" style="font-family:'Archivo Black',sans-serif; font-size:18px;">Reviews</h3>
+      <button id="close-modal" style="background:none; border:none; color:var(--white); font-size:22px; cursor:pointer; line-height:1;">&times;</button>
+    </div>
+    <div id="modal-review-list" style="padding:20px 24px; overflow-y:auto;"></div>
+  </div>
+</div>
+
+<style>
+  .review-card {
+    border:1px solid rgba(255,255,255,0.12); border-radius:10px; padding:20px;
+    background:var(--near-black); display:flex; flex-direction:column; gap:8px;
+  }
+  .review-stars { color:#ffb800; font-size:15px; letter-spacing:2px; }
+  .review-name { font-size:13px; color:var(--dim); }
+  .review-comment { font-size:14px; color:var(--white); line-height:1.5; }
+  .review-nav-btn {
+    width:30px; height:30px; border-radius:50%; border:1px solid rgba(255,255,255,0.15);
+    background:transparent; color:var(--white); cursor:pointer; font-size:16px;
+  }
+  .review-nav-btn:hover { border-color:var(--red); }
+  .review-nav-btn:disabled { opacity:0.35; cursor:not-allowed; }
+  .modal-review-row { padding:14px 0; border-bottom:1px solid rgba(255,255,255,0.08); }
+  .modal-review-row:last-child { border-bottom:none; }
+  @media (max-width:720px) {
+    #reviews-carousel { grid-template-columns:1fr !important; }
+  }
+</style>
+
+<script>
+(function () {
+  var SUPABASE_URL = "https://zarasbzkxjlsiydniitk.supabase.co";
+  var FUNCTIONS_BASE = SUPABASE_URL + "/functions/v1";
+  var SUPABASE_ANON_KEY = "sb_publishable_3lDfYDfblJDSnh62F8wHSQ_c789CdX5";
+  var PRODUCT_ID = "kitchen-magic";
+
+  var PAGE_SIZE = 3;
+  var currentPage = 0;
+  var reviews = [];
+
+  function stars(n) {
+    return '★'.repeat(n) + '☆'.repeat(5 - n);
+  }
+
+  function renderCarousel() {
+    var container = document.getElementById('reviews-carousel');
+    var totalPages = Math.max(1, Math.ceil(reviews.length / PAGE_SIZE));
+    currentPage = Math.min(currentPage, totalPages - 1);
+
+    var slice = reviews.slice(currentPage * PAGE_SIZE, currentPage * PAGE_SIZE + PAGE_SIZE);
+    container.innerHTML = slice.map(function (r) {
+      return '<div class="review-card">' +
+        '<div class="review-stars">' + stars(r.rating) + '</div>' +
+        '<div class="review-name">' + escapeHtml(r.name) + '</div>' +
+        (r.comment ? '<div class="review-comment">' + escapeHtml(r.comment) + '</div>' : '') +
+        '</div>';
+    }).join('');
+
+    document.getElementById('page-indicator').textContent = (currentPage + 1) + '/' + totalPages;
+    document.getElementById('prev-page').disabled = currentPage === 0;
+    document.getElementById('next-page').disabled = currentPage >= totalPages - 1;
+  }
+
+  function escapeHtml(str) {
+    var div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  document.getElementById('prev-page').addEventListener('click', function () {
+    if (currentPage > 0) { currentPage--; renderCarousel(); }
+  });
+  document.getElementById('next-page').addEventListener('click', function () {
+    currentPage++; renderCarousel();
+  });
+
+  document.getElementById('view-all-reviews').addEventListener('click', function () {
+    document.getElementById('modal-title').textContent = reviews.length + ' Reviews';
+    document.getElementById('modal-review-list').innerHTML = reviews.map(function (r) {
+      return '<div class="modal-review-row">' +
+        '<div class="review-stars">' + stars(r.rating) + '</div>' +
+        '<div class="review-name">' + escapeHtml(r.name) + '</div>' +
+        (r.comment ? '<div class="review-comment">' + escapeHtml(r.comment) + '</div>' : '') +
+        '</div>';
+    }).join('');
+    document.getElementById('reviews-modal').style.display = 'flex';
+  });
+  document.getElementById('close-modal').addEventListener('click', function () {
+    document.getElementById('reviews-modal').style.display = 'none';
+  });
+  document.getElementById('reviews-modal').addEventListener('click', function (e) {
+    if (e.target === this) this.style.display = 'none';
+  });
+
+  fetch(FUNCTIONS_BASE + '/get-reviews?product=' + encodeURIComponent(PRODUCT_ID), {
+    headers: { 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY, 'apikey': SUPABASE_ANON_KEY }
+  })
+    .then(function (res) { return res.json(); })
+    .then(function (data) {
+      reviews = data.reviews || [];
+      if (!reviews.length) {
+        document.getElementById('reviews-heading').textContent = 'Customer reviews';
+        document.getElementById('reviews-carousel').innerHTML =
+          '<p style="color:var(--dim); font-size:14px; grid-column:1/-1;">No reviews yet — be the first to leave one after your purchase!</p>';
+        document.getElementById('carousel-nav').style.display = 'none';
+        document.getElementById('view-all-reviews').style.display = 'none';
+        return;
+      }
+      document.getElementById('reviews-heading').textContent =
+        'Customer reviews (' + data.average.toFixed(1) + '★, ' + data.count + ')';
+      renderCarousel();
+    })
+    .catch(function () {
+      document.getElementById('reviews-heading').textContent = 'Customer reviews';
+      document.getElementById('reviews-carousel').innerHTML =
+        '<p style="color:var(--dim); font-size:14px; grid-column:1/-1;">No reviews yet — be the first to leave one after your purchase!</p>';
+      document.getElementById('carousel-nav').style.display = 'none';
+      document.getElementById('view-all-reviews').style.display = 'none';
+    });
+})();
+</script>
+
 <section id="inside">
   <div class="wrap">
     <div class="section-head">
@@ -502,150 +647,6 @@
   Set PRODUCT_ID to match that book, same value used on its thank-you page.
 -->
 
-<section id="reviews-section">
-  <div class="wrap">
-    <div class="section-head" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
-      <div>
-        <div class="kicker">CUSTOMER REVIEWS</div>
-        <h2 id="reviews-heading">Customer reviews</h2>
-      </div>
-      <div id="carousel-nav" style="display:flex; align-items:center; gap:10px; font-size:14px; color:var(--dim);">
-        <span id="page-indicator">1/1</span>
-        <button id="prev-page" class="review-nav-btn" aria-label="Previous">‹</button>
-        <button id="next-page" class="review-nav-btn" aria-label="Next">›</button>
-      </div>
-    </div>
-
-    <div id="reviews-carousel" style="display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:12px;"></div>
-
-    <button id="view-all-reviews" class="btn btn-ghost" style="margin-top:20px;">View all reviews</button>
-  </div>
-</section>
-
-<!-- Modal -->
-<div id="reviews-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:100; align-items:center; justify-content:center; padding:24px;">
-  <div style="background:var(--near-black); border-radius:10px; max-width:640px; width:100%; max-height:80vh; display:flex; flex-direction:column; border:1px solid rgba(255,255,255,0.1);">
-    <div style="display:flex; align-items:center; justify-content:space-between; padding:20px 24px; border-bottom:1px solid rgba(255,255,255,0.1);">
-      <h3 id="modal-title" style="font-family:'Archivo Black',sans-serif; font-size:18px;">Reviews</h3>
-      <button id="close-modal" style="background:none; border:none; color:var(--white); font-size:22px; cursor:pointer; line-height:1;">&times;</button>
-    </div>
-    <div id="modal-review-list" style="padding:20px 24px; overflow-y:auto;"></div>
-  </div>
-</div>
-
-<style>
-  .review-card {
-    border:1px solid rgba(255,255,255,0.12); border-radius:10px; padding:20px;
-    background:var(--near-black); display:flex; flex-direction:column; gap:8px;
-  }
-  .review-stars { color:#ffb800; font-size:15px; letter-spacing:2px; }
-  .review-name { font-size:13px; color:var(--dim); }
-  .review-comment { font-size:14px; color:var(--white); line-height:1.5; }
-  .review-nav-btn {
-    width:30px; height:30px; border-radius:50%; border:1px solid rgba(255,255,255,0.15);
-    background:transparent; color:var(--white); cursor:pointer; font-size:16px;
-  }
-  .review-nav-btn:hover { border-color:var(--red); }
-  .review-nav-btn:disabled { opacity:0.35; cursor:not-allowed; }
-  .modal-review-row { padding:14px 0; border-bottom:1px solid rgba(255,255,255,0.08); }
-  .modal-review-row:last-child { border-bottom:none; }
-  @media (max-width:720px) {
-    #reviews-carousel { grid-template-columns:1fr !important; }
-  }
-</style>
-
-<script>
-(function () {
-  var SUPABASE_URL = "https://zarasbzkxjlsiydniitk.supabase.co";
-  var FUNCTIONS_BASE = SUPABASE_URL + "/functions/v1";
-  var SUPABASE_ANON_KEY = "sb_publishable_3lDfYDfblJDSnh62F8wHSQ_c789CdX5";
-  var PRODUCT_ID = "kitchen-magic";
-
-  var PAGE_SIZE = 3;
-  var currentPage = 0;
-  var reviews = [];
-
-  function stars(n) {
-    return '★'.repeat(n) + '☆'.repeat(5 - n);
-  }
-
-  function renderCarousel() {
-    var container = document.getElementById('reviews-carousel');
-    var totalPages = Math.max(1, Math.ceil(reviews.length / PAGE_SIZE));
-    currentPage = Math.min(currentPage, totalPages - 1);
-
-    var slice = reviews.slice(currentPage * PAGE_SIZE, currentPage * PAGE_SIZE + PAGE_SIZE);
-    container.innerHTML = slice.map(function (r) {
-      return '<div class="review-card">' +
-        '<div class="review-stars">' + stars(r.rating) + '</div>' +
-        '<div class="review-name">' + escapeHtml(r.name) + '</div>' +
-        (r.comment ? '<div class="review-comment">' + escapeHtml(r.comment) + '</div>' : '') +
-        '</div>';
-    }).join('');
-
-    document.getElementById('page-indicator').textContent = (currentPage + 1) + '/' + totalPages;
-    document.getElementById('prev-page').disabled = currentPage === 0;
-    document.getElementById('next-page').disabled = currentPage >= totalPages - 1;
-  }
-
-  function escapeHtml(str) {
-    var div = document.createElement('div');
-    div.textContent = str;
-    return div.innerHTML;
-  }
-
-  document.getElementById('prev-page').addEventListener('click', function () {
-    if (currentPage > 0) { currentPage--; renderCarousel(); }
-  });
-  document.getElementById('next-page').addEventListener('click', function () {
-    currentPage++; renderCarousel();
-  });
-
-  document.getElementById('view-all-reviews').addEventListener('click', function () {
-    document.getElementById('modal-title').textContent = reviews.length + ' Reviews';
-    document.getElementById('modal-review-list').innerHTML = reviews.map(function (r) {
-      return '<div class="modal-review-row">' +
-        '<div class="review-stars">' + stars(r.rating) + '</div>' +
-        '<div class="review-name">' + escapeHtml(r.name) + '</div>' +
-        (r.comment ? '<div class="review-comment">' + escapeHtml(r.comment) + '</div>' : '') +
-        '</div>';
-    }).join('');
-    document.getElementById('reviews-modal').style.display = 'flex';
-  });
-  document.getElementById('close-modal').addEventListener('click', function () {
-    document.getElementById('reviews-modal').style.display = 'none';
-  });
-  document.getElementById('reviews-modal').addEventListener('click', function (e) {
-    if (e.target === this) this.style.display = 'none';
-  });
-
-  fetch(FUNCTIONS_BASE + '/get-reviews?product=' + encodeURIComponent(PRODUCT_ID), {
-    headers: { 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY, 'apikey': SUPABASE_ANON_KEY }
-  })
-    .then(function (res) { return res.json(); })
-    .then(function (data) {
-      reviews = data.reviews || [];
-      if (!reviews.length) {
-        document.getElementById('reviews-heading').textContent = 'Customer reviews';
-        document.getElementById('reviews-carousel').innerHTML =
-          '<p style="color:var(--dim); font-size:14px; grid-column:1/-1;">No reviews yet — be the first to leave one after your purchase!</p>';
-        document.getElementById('carousel-nav').style.display = 'none';
-        document.getElementById('view-all-reviews').style.display = 'none';
-        return;
-      }
-      document.getElementById('reviews-heading').textContent =
-        'Customer reviews (' + data.average.toFixed(1) + '★, ' + data.count + ')';
-      renderCarousel();
-    })
-    .catch(function () {
-      document.getElementById('reviews-heading').textContent = 'Customer reviews';
-      document.getElementById('reviews-carousel').innerHTML =
-        '<p style="color:var(--dim); font-size:14px; grid-column:1/-1;">No reviews yet — be the first to leave one after your purchase!</p>';
-      document.getElementById('carousel-nav').style.display = 'none';
-      document.getElementById('view-all-reviews').style.display = 'none';
-    });
-})();
-</script>
 
 </body>
 </html>
