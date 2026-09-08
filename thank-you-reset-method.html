@@ -62,12 +62,35 @@
     <button class="btn" id="download-btn-1" disabled>Preparing your download…</button>
 
     <a href="index.html" class="back">← Back to PureHealthGuide</a>
+
+  <div id="review-block" style="margin-top:32px; padding-top:28px; border-top:1px solid rgba(255,255,255,0.1); display:none;">
+    <h3 style="font-family:'Archivo Black',sans-serif; font-size:18px; margin-bottom:6px;">Leave a review</h3>
+    <p style="color:#9a9a95; font-size:13px; margin-bottom:18px;">Only buyers can leave a review — thanks for picking up a copy.</p>
+
+    <div id="star-picker" style="display:flex; gap:6px; justify-content:center; margin-bottom:16px; font-size:32px; cursor:pointer;">
+      <span class="star" data-value="1">☆</span>
+      <span class="star" data-value="2">☆</span>
+      <span class="star" data-value="3">☆</span>
+      <span class="star" data-value="4">☆</span>
+      <span class="star" data-value="5">☆</span>
+    </div>
+
+    <input id="review-name" type="text" placeholder="Your name (e.g. first name + last initial)"
+      style="width:100%; padding:12px 14px; margin-bottom:10px; border-radius:4px; border:1px solid rgba(255,255,255,0.15); background:#0a0a0a; color:#f5f5f3; font-size:14px; box-sizing:border-box;">
+
+    <textarea id="review-comment" rows="3" placeholder="What did you think? (optional)"
+      style="width:100%; padding:12px 14px; margin-bottom:14px; border-radius:4px; border:1px solid rgba(255,255,255,0.15); background:#0a0a0a; color:#f5f5f3; font-size:14px; font-family:inherit; resize:vertical; box-sizing:border-box;"></textarea>
+
+    <button id="submit-review-btn" class="btn" style="width:100%;">Submit review</button>
+    <p id="review-status" style="font-size:13px; color:#9a9a95; margin-top:10px;"></p>
+  </div>
   </div>
 
 <script>
   var SUPABASE_URL = "https://zarasbzkxjlsiydniitk.supabase.co";
   var FUNCTIONS_BASE = SUPABASE_URL + "/functions/v1";
   var SUPABASE_ANON_KEY = "sb_publishable_3lDfYDfblJDSnh62F8wHSQ_c789CdX5";
+  var PRODUCT_ID = "reset-method";
 
   var titleEl = document.getElementById('title');
   var msgEl = document.getElementById('message');
@@ -99,6 +122,7 @@
           btn1.disabled = false;
           btn1.textContent = data.files[0].label;
           btn1.onclick = function () { window.location.href = data.files[0].url; };
+          window.__showReviewBlock();
         } else {
           titleEl.textContent = "We couldn't verify this order";
           msgEl.textContent = data.error || "If you just paid, wait a few seconds and refresh this page.";
@@ -111,6 +135,91 @@
         btn1.style.display = 'none';
           });
   }
+</script>
+
+
+<script>
+(function () {
+  var selectedRating = 0;
+  var stars = document.querySelectorAll('#star-picker .star');
+  var reviewBlock = document.getElementById('review-block');
+  var statusEl = document.getElementById('review-status');
+  var submitBtn = document.getElementById('submit-review-btn');
+
+  function paintStars(upTo) {
+    stars.forEach(function (star) {
+      var val = parseInt(star.dataset.value, 10);
+      star.textContent = val <= upTo ? '★' : '☆';
+      star.style.color = val <= upTo ? '#ffb800' : '#5a5a55';
+    });
+  }
+
+  stars.forEach(function (star) {
+    star.addEventListener('mouseenter', function () {
+      paintStars(parseInt(star.dataset.value, 10));
+    });
+    star.addEventListener('click', function () {
+      selectedRating = parseInt(star.dataset.value, 10);
+      paintStars(selectedRating);
+    });
+  });
+  document.getElementById('star-picker').addEventListener('mouseleave', function () {
+    paintStars(selectedRating);
+  });
+
+  submitBtn.addEventListener('click', function () {
+    var name = document.getElementById('review-name').value.trim();
+    var comment = document.getElementById('review-comment').value.trim();
+
+    if (!selectedRating) {
+      statusEl.textContent = 'Please select a star rating.';
+      return;
+    }
+    if (!name) {
+      statusEl.textContent = 'Please enter your name.';
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting…';
+    statusEl.textContent = '';
+
+    fetch(FUNCTIONS_BASE + '/submit-review', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+        'apikey': SUPABASE_ANON_KEY
+      },
+      body: JSON.stringify({
+        orderRef: orderID,
+        product: PRODUCT_ID,
+        name: name,
+        rating: selectedRating,
+        comment: comment
+      })
+    })
+      .then(function (res) { return res.json(); })
+      .then(function (data) {
+        if (data.success) {
+          reviewBlock.innerHTML = '<p style="color:#4ade80; font-size:14px; text-align:center;">Thanks — your review is live!</p>';
+        } else {
+          statusEl.textContent = data.error || 'Something went wrong. Please try again.';
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Submit review';
+        }
+      })
+      .catch(function () {
+        statusEl.textContent = 'Something went wrong. Please try again.';
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit review';
+      });
+  });
+
+  window.__showReviewBlock = function () {
+    reviewBlock.style.display = 'block';
+  };
+})();
 </script>
 
 </body>
