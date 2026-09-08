@@ -626,7 +626,11 @@
     .then(function (data) {
       reviews = data.reviews || [];
       if (!reviews.length) {
-        document.getElementById('reviews-section').style.display = 'none';
+        document.getElementById('reviews-heading').textContent = 'Customer reviews';
+        document.getElementById('reviews-carousel').innerHTML =
+          '<p style="color:var(--dim); font-size:14px; grid-column:1/-1;">No reviews yet — be the first to leave one after your purchase!</p>';
+        document.getElementById('carousel-nav').style.display = 'none';
+        document.getElementById('view-all-reviews').style.display = 'none';
         return;
       }
       document.getElementById('reviews-heading').textContent =
@@ -634,7 +638,11 @@
       renderCarousel();
     })
     .catch(function () {
-      document.getElementById('reviews-section').style.display = 'none';
+      document.getElementById('reviews-heading').textContent = 'Customer reviews';
+      document.getElementById('reviews-carousel').innerHTML =
+        '<p style="color:var(--dim); font-size:14px; grid-column:1/-1;">No reviews yet — be the first to leave one after your purchase!</p>';
+      document.getElementById('carousel-nav').style.display = 'none';
+      document.getElementById('view-all-reviews').style.display = 'none';
     });
 })();
 </script>

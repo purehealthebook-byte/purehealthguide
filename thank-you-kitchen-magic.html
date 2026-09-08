@@ -122,7 +122,8 @@
           btn1.disabled = false;
           btn1.textContent = data.files[0].label;
           btn1.onclick = function () { window.location.href = data.files[0].url; };
-          window.__showReviewBlock();
+          if (window.__showReviewBlock) { window.__showReviewBlock(); }
+          
         } else {
           titleEl.textContent = "We couldn't verify this order";
           msgEl.textContent = data.error || "If you just paid, wait a few seconds and refresh this page.";
