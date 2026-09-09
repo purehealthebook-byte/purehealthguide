@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thank You — PureHealthGuide</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700&display=swap');
+  :root {
+    --black: #0a0a0a; --near-black: #141414; --white: #f5f5f3;
+    --dim: #9a9a95; --red: #c8291f; --red-glow: #ff3b30;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--black); color: var(--white);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px;
+  }
+  .card {
+    max-width: 480px; width: 100%;
+    background: var(--near-black);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 48px 36px;
+    text-align: center;
+  }
+  .check {
+    width: 56px; height: 56px; border-radius: 50%;
+    background: rgba(200,41,31,0.15); color: var(--red);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px; margin: 0 auto 24px;
+  }
+  h1 {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 26px; margin-bottom: 12px; letter-spacing: -0.01em;
+  }
+  p { color: var(--dim); font-size: 15px; margin-bottom: 28px; line-height: 1.6; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 15px 26px; font-size: 15px; font-weight: 600; border-radius: 4px;
+    text-decoration: none; border: none; cursor: pointer;
+    background: var(--red); color: var(--white);
+    transition: background .2s;
+    width: 100%; justify-content: center;
+  }
+  .btn:hover { background: var(--red-glow); }
+  .btn[disabled] { opacity: 0.5; cursor: not-allowed; }
+  .note { font-size: 12px; color: #6b6b66; margin-top: 18px; }
+  a.back { color: var(--dim); font-size: 13px; text-decoration: none; display: inline-block; margin-top: 28px; }
+  a.back:hover { color: var(--white); }
+</style>
+</head>
+<body>
+
+  <div class="card">
+    <div class="check">✓</div>
+    <h1 id="title">Checking your order…</h1>
+    <p id="message">Give us a second while we confirm your payment with PayPal.</p>
+
+    <button class="btn" id="download-btn-1" disabled>Preparing your download…</button>
+
+    <a href="index.html" class="back">← Back to PureHealthGuide</a>
+
+  <div id="review-block" style="margin-top:32px; padding-top:28px; border-top:1px solid rgba(255,255,255,0.1); display:none;">
+    <h3 style="font-family:'Archivo Black',sans-serif; font-size:18px; margin-bottom:6px;">Leave a review</h3>
+    <p style="color:#9a9a95; font-size:13px; margin-bottom:18px;">Only buyers can leave a review — thanks for picking up a copy.</p>
+
+    <div id="star-picker" style="display:flex; gap:6px; justify-content:center; margin-bottom:16px; font-size:32px; cursor:pointer;">
+      <span class="star" data-value="1">☆</span>
+      <span class="star" data-value="2">☆</span>
+      <span class="star" data-value="3">☆</span>
+      <span class="star" data-value="4">☆</span>
+      <span class="star" data-value="5">☆</span>
+    </div>
+
+    <input id="review-name" type="text" placeholder="Your name (e.g. first name + last initial)"
+      style="width:100%; padding:12px 14px; margin-bottom:10px; border-radius:4px; border:1px solid rgba(255,255,255,0.15); background:#0a0a0a; color:#f5f5f3; font-size:14px; box-sizing:border-box;">
+
+    <textarea id="review-comment" rows="3" placeholder="What did you think? (optional)"
+      style="width:100%; padding:12px 14px; margin-bottom:14px; border-radius:4px; border:1px solid rgba(255,255,255,0.15); background:#0a0a0a; color:#f5f5f3; font-size:14px; font-family:inherit; resize:vertical; box-sizing:border-box;"></textarea>
+
+    <button id="submit-review-btn" class="btn" style="width:100%;">Submit review</button>
+    <p id="review-status" style="font-size:13px; color:#9a9a95; margin-top:10px;"></p>
+  </div>
+  </div>
+
+<script>
+  var SUPABASE_URL = "https://zarasbzkxjlsiydniitk.supabase.co";
+  var FUNCTIONS_BASE = SUPABASE_URL + "/functions/v1";
+  var SUPABASE_ANON_KEY = "sb_publishable_3lDfYDfblJDSnh62F8wHSQ_c789CdX5";
+  var PRODUCT_ID = "reset-method";
+
+  var titleEl = document.getElementById('title');
+  var msgEl = document.getElementById('message');
+  var btn1 = document.getElementById('download-btn-1');
+
+  var params = new URLSearchParams(window.location.search);
+  var orderID = params.get('order');
+
+  if (!orderID) {
+    titleEl.textContent = "No order found";
+    msgEl.textContent = "It looks like you reached this page without completing a purchase.";
+    btn1.style.display = 'none';
+  } else {
+    fetch(FUNCTIONS_BASE + '/get-download-link', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+        'apikey': SUPABASE_ANON_KEY
+      },
+      body: JSON.stringify({ orderID: orderID })
+    })
+      .then(function (res) { return res.json(); })
+      .then(function (data) {
+        if (data.files && data.files.length === 1) {
+          titleEl.textContent = "Thank you for your purchase!";
+          msgEl.textContent = "Your copy of Learn How to Loss Belly Fat in under 10 Mins is ready.";
+
+          btn1.disabled = false;
+          btn1.textContent = data.files[0].label;
+          btn1.onclick = function () { window.location.href = data.files[0].url; };
+          if (window.__showReviewBlock) { window.__showReviewBlock(); }
+          
+        } else {
+          titleEl.textContent = "We couldn't verify this order";
+          msgEl.textContent = data.error || "If you just paid, wait a few seconds and refresh this page.";
+          btn1.style.display = 'none';
+              }
+      })
+      .catch(function () {
+        titleEl.textContent = "Something went wrong";
+        msgEl.textContent = "Please refresh this page. If it keeps happening, contact us with your order ID: " + orderID;
+        btn1.style.display = 'none';
+          });
+  }
+</script>
+
+
+<script>
+(function () {
+  var selectedRating = 0;
+  var stars = document.querySelectorAll('#star-picker .star');
+  var reviewBlock = document.getElementById('review-block');
+  var statusEl = document.getElementById('review-status');
+  var submitBtn = document.getElementById('submit-review-btn');
+
+  function paintStars(upTo) {
+    stars.forEach(function (star) {
+      var val = parseInt(star.dataset.value, 10);
+      star.textContent = val <= upTo ? '★' : '☆';
+      star.style.color = val <= upTo ? '#ffb800' : '#5a5a55';
+    });
+  }
+
+  stars.forEach(function (star) {
+    star.addEventListener('mouseenter', function () {
+      paintStars(parseInt(star.dataset.value, 10));
+    });
+    star.addEventListener('click', function () {
+      selectedRating = parseInt(star.dataset.value, 10);
+      paintStars(selectedRating);
+    });
+  });
+  document.getElementById('star-picker').addEventListener('mouseleave', function () {
+    paintStars(selectedRating);
+  });
+
+  submitBtn.addEventListener('click', function () {
+    var name = document.getElementById('review-name').value.trim();
+    var comment = document.getElementById('review-comment').value.trim();
+
+    if (!selectedRating) {
+      statusEl.textContent = 'Please select a star rating.';
+      return;
+    }
+    if (!name) {
+      statusEl.textContent = 'Please enter your name.';
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting…';
+    statusEl.textContent = '';
+
+    fetch(FUNCTIONS_BASE + '/submit-review', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+        'apikey': SUPABASE_ANON_KEY
+      },
+      body: JSON.stringify({
+        orderRef: orderID,
+        product: PRODUCT_ID,
+        name: name,
+        rating: selectedRating,
+        comment: comment
+      })
+    })
+      .then(function (res) { return res.json(); })
+      .then(function (data) {
+        if (data.success) {
+          reviewBlock.innerHTML = '<p style="color:#4ade80; font-size:14px; text-align:center;">Thanks — your review is live!</p>';
+        } else {
+          statusEl.textContent = data.error || 'Something went wrong. Please try again.';
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Submit review';
+        }
+      })
+      .catch(function () {
+        statusEl.textContent = 'Something went wrong. Please try again.';
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit review';
+      });
+  });
+
+  window.__showReviewBlock = function () {
+    reviewBlock.style.display = 'block';
+  };
+})();
+</script>
+
+</body>
+</html>

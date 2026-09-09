@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Pest-Free Home — HomeGuard</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700&display=swap');
+
+  :root {
+    --black: #0a0a0a;
+    --near-black: #141414;
+    --white: #f5f5f3;
+    --dim: #9a9a95;
+    --red: #c8291f;
+    --red-glow: #ff3b30;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+  a { color: inherit; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 32px; }
+
+  /* ---------- Nav ---------- */
+  nav {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(10,10,10,0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 76px; }
+  .logo { font-family: 'Archivo Black', sans-serif; font-size: 20px; letter-spacing: -0.02em; }
+  .logo span { color: var(--red); }
+  .nav-links { display: flex; gap: 36px; font-size: 15px; color: var(--dim); }
+  .nav-links a { text-decoration: none; transition: color .2s; }
+  .nav-links a:hover { color: var(--white); }
+
+  /* ---------- Stats / social bar ---------- */
+  .statbar {
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    background: var(--near-black);
+    padding: 14px 0;
+  }
+  .statbar .wrap {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+  .live-stats { display: flex; gap: 22px; flex-wrap: wrap; font-size: 13px; color: var(--dim); }
+  .live-stats strong { color: var(--white); }
+  .live-dot {
+    display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+    background: #4ade80; margin-right: 6px;
+    box-shadow: 0 0 0 0 rgba(74,222,128,0.6);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(74,222,128,0.5); }
+    70% { box-shadow: 0 0 0 6px rgba(74,222,128,0); }
+    100% { box-shadow: 0 0 0 0 rgba(74,222,128,0); }
+  }
+  .social-links { display: flex; gap: 10px; }
+  .social-links a {
+    width: 32px; height: 32px;
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.12);
+    display: flex; align-items: center; justify-content: center;
+    text-decoration: none;
+    color: var(--dim);
+    font-size: 14px;
+    transition: all .2s;
+  }
+  .social-links a:hover { border-color: var(--red); color: var(--white); }
+
+  /* ---------- Series (now first) ---------- */
+  #series { padding: 72px 0 88px; }
+  .section-head { max-width: 620px; margin-bottom: 44px; }
+  .kicker { color: var(--red); font-size: 13px; font-weight: 600; letter-spacing: 0.08em; margin-bottom: 14px; }
+  h2 {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: clamp(28px, 3.4vw, 38px);
+    letter-spacing: -0.02em;
+    line-height: 1.08;
+  }
+  .section-head p { color: var(--dim); font-size: 16px; margin-top: 14px; }
+
+  .series-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+  .series-card {
+    display: flex; gap: 18px;
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 10px;
+    padding: 26px;
+    background: var(--near-black);
+    position: relative;
+  }
+  .series-card.active { border-color: rgba(200,41,31,0.5); }
+  .series-flag {
+    position: absolute; top: -10px; right: 18px;
+    background: var(--red); color: var(--white);
+    font-size: 10px; font-weight: 700; letter-spacing: 0.04em;
+    padding: 4px 9px; border-radius: 4px;
+  }
+  .series-icon {
+    width: 44px; height: 44px; border-radius: 10px;
+    background: rgba(255,255,255,0.06);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+  }
+  .series-card.active .series-icon { background: rgba(200,41,31,0.18); color: var(--red); }
+  .series-body { flex: 1; min-width: 0; }
+  .series-stat { font-size: 11px; font-weight: 700; letter-spacing: 0.04em; color: #4ade80; margin-bottom: 8px; }
+  .series-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+  .badge { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.02em; padding: 4px 9px; border-radius: 4px; }
+  .badge.live { background: var(--red); color: var(--white); }
+  .badge.soon { background: rgba(255,255,255,0.08); color: var(--dim); border: 1px solid rgba(255,255,255,0.15); }
+  .series-meta .price-was { font-size: 13px; color: var(--dim); text-decoration: line-through; }
+  .series-meta .price-now { font-size: 15px; font-weight: 700; color: var(--white); }
+  .series-title-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .series-card h4 { font-size: 17px; font-weight: 600; line-height: 1.3; }
+  .series-card p { font-size: 13px; color: var(--dim); margin-top: 6px; }
+  .series-link { color: var(--dim); font-size: 16px; flex-shrink: 0; text-decoration: none; }
+  .series-link:hover { color: var(--white); }
+
+  /* ---------- Hero ---------- */
+  .hero { position: relative; padding: 88px 0 110px; overflow: hidden; border-top: 1px solid rgba(255,255,255,0.08); }
+  .hero::before {
+    content: ''; position: absolute; top: -20%; left: 50%;
+    width: 900px; height: 900px; transform: translateX(-50%);
+    background: radial-gradient(circle, rgba(200,41,31,0.18) 0%, rgba(200,41,31,0) 65%);
+    pointer-events: none;
+  }
+  .hero .wrap { position: relative; display: grid; grid-template-columns: 1fr; gap: 64px; align-items: center; max-width: 720px; margin: 0 auto; text-align: center; }
+  h1.headline { font-family: 'Archivo Black', sans-serif; font-size: clamp(40px, 5.2vw, 64px); line-height: 0.98; letter-spacing: -0.02em; margin-bottom: 24px; }
+  h1.headline .accent { color: var(--red); }
+  .hero p.sub { font-size: 18px; color: var(--dim); max-width: 46ch; margin: 0 auto 36px; }
+  .price-row { display: flex; align-items: baseline; gap: 14px; margin-bottom: 36px; justify-content: center; }
+  .price-now { font-family: 'Archivo Black', sans-serif; font-size: 40px; color: var(--white); }
+  .price-was { font-size: 20px; color: var(--dim); text-decoration: line-through; }
+  .price-off { background: var(--red); color: var(--white); font-size: 13px; font-weight: 700; padding: 5px 10px; border-radius: 4px; }
+  .cta-row { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; align-items: center; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 16px 28px; font-size: 15px; font-weight: 600; border-radius: 4px;
+    text-decoration: none; border: 1px solid transparent; cursor: pointer;
+    transition: transform .15s ease, background .2s ease, border-color .2s ease;
+  }
+  .btn:hover { transform: translateY(-1px); }
+  .btn-primary { background: var(--red); color: var(--white); }
+  .btn-primary:hover { background: var(--red-glow); }
+  .btn-ghost { background: transparent; color: var(--white); border-color: rgba(255,255,255,0.25); }
+  .btn-ghost:hover { border-color: var(--white); }
+  .hero-cover { position: relative; display: flex; justify-content: center; }
+  .hero-cover img { width: 100%; max-width: 340px; border-radius: 2px; box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.06); }
+
+  /* ---------- Trust bar ---------- */
+  .trust { border-top: 1px solid rgba(255,255,255,0.08); border-bottom: 1px solid rgba(255,255,255,0.08); padding: 28px 0; }
+  .trust .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 20px; font-size: 14px; color: var(--dim); }
+  .trust strong { color: var(--white); }
+
+  /* ---------- Section shared ---------- */
+  section { padding: 100px 0; }
+
+  /* ---------- Problem/solution ---------- */
+  .contrast {
+    display: grid; grid-template-columns: 1fr auto 1fr; gap: 24px; align-items: center;
+    border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 36px; background: var(--near-black);
+  }
+  .contrast .side { display: flex; align-items: center; gap: 16px; }
+  .contrast .mark {
+    width: 40px; height: 40px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 18px; flex-shrink: 0;
+  }
+  .mark.no { background: rgba(200,41,31,0.15); color: var(--red); border: 1px solid rgba(200,41,31,0.4); }
+  .mark.yes { background: rgba(255,255,255,0.08); color: var(--white); border: 1px solid rgba(255,255,255,0.25); }
+  .contrast .side .label-big { font-size: 19px; font-weight: 600; }
+  .contrast .side .label-small { font-size: 14px; color: var(--dim); }
+  .contrast .arrow { color: var(--red); font-size: 22px; }
+
+  /* ---------- Mission ---------- */
+  .mission { text-align: center; padding: 90px 0; border-top: 1px solid rgba(255,255,255,0.08); border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .mission .wrap { max-width: 720px; }
+  .mission .logo { font-size: 30px; margin-bottom: 18px; justify-content: center; display: flex; }
+  .mission p { font-size: 17px; color: var(--dim); }
+  .mission p .accent-line { color: var(--white); font-weight: 500; }
+
+  /* ---------- Pillars ---------- */
+  .pillars-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  .pillar-card {
+    border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 26px 22px;
+    background: var(--near-black);
+  }
+  .pillar-icon {
+    width: 42px; height: 42px; border-radius: 10px;
+    background: rgba(200,41,31,0.15); color: var(--red);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; margin-bottom: 18px;
+  }
+  .pillar-card h4 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+  .pillar-card p { font-size: 13px; color: var(--dim); }
+
+  /* ---------- Chapters ---------- */
+  .chapter-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+    background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 6px; overflow: hidden;
+  }
+  .chapter-cell { background: var(--black); padding: 32px 28px; }
+  .chapter-num { font-family: 'Archivo Black', sans-serif; color: var(--red); font-size: 14px; margin-bottom: 14px; }
+  .chapter-cell h3 { font-size: 17px; font-weight: 600; margin-bottom: 8px; }
+  .chapter-cell p { font-size: 14px; color: var(--dim); }
+
+  /* ---------- What's inside / preview ---------- */
+  .preview { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 64px; align-items: center; }
+  .preview-list { display: flex; flex-direction: column; gap: 22px; }
+  .preview-item { display: flex; gap: 16px; }
+  .preview-item .icon { color: var(--red); font-size: 18px; flex-shrink: 0; line-height: 1.5; }
+  .preview-item h4 { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+  .preview-item p { font-size: 14px; color: var(--dim); }
+
+  /* ---------- Final CTA ---------- */
+  .final-cta { text-align: center; padding: 120px 0; position: relative; }
+  .final-cta::before {
+    content: ''; position: absolute; top: 0; left: 50%;
+    width: 700px; height: 700px; transform: translateX(-50%);
+    background: radial-gradient(circle, rgba(200,41,31,0.14) 0%, rgba(200,41,31,0) 65%);
+    pointer-events: none;
+  }
+  .final-cta .wrap { position: relative; }
+  .final-cta h2 { max-width: 700px; margin: 0 auto 20px; }
+  .final-cta p { color: var(--dim); font-size: 17px; margin-bottom: 40px; }
+
+  /* ---------- Footer ---------- */
+  footer { border-top: 1px solid rgba(255,255,255,0.08); padding: 56px 0 40px; }
+  .footer-top { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 24px; margin-bottom: 36px; }
+  .footer-tagline p { color: var(--dim); font-size: 14px; margin-top: 8px; max-width: 32ch; }
+  .footer-social { display: flex; gap: 10px; }
+  .footer-social a {
+    width: 34px; height: 34px; border-radius: 7px;
+    border: 1px solid rgba(255,255,255,0.12);
+    display: flex; align-items: center; justify-content: center;
+    text-decoration: none; color: var(--dim); font-size: 14px;
+    transition: all .2s;
+  }
+  .footer-social a:hover { border-color: var(--red); color: var(--white); }
+  .disclaimer {
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding-top: 28px;
+    font-size: 12px;
+    line-height: 1.7;
+    color: #6b6b66;
+  }
+  .disclaimer strong { color: var(--dim); display: block; margin-bottom: 8px; font-size: 12px; letter-spacing: 0.04em; }
+  .footer-bottom {
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+    margin-top: 24px; font-size: 12px; color: #6b6b66;
+  }
+
+  @media (max-width: 860px) {
+    .hero .wrap { grid-template-columns: 1fr; }
+    .hero-cover { order: -1; }
+    .contrast { grid-template-columns: 1fr; text-align: left; }
+    .contrast .arrow { transform: rotate(90deg); }
+    .chapter-grid { grid-template-columns: 1fr; }
+    .preview { grid-template-columns: 1fr; }
+    .series-grid { grid-template-columns: 1fr; }
+    .pillars-grid { grid-template-columns: repeat(2, 1fr); }
+    .nav-links { display: none; }
+    .statbar .wrap { justify-content: center; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a href="index.html" class="logo">Pure<span>Health</span>Guide</a>
+    <div class="nav-links">
+      <a href="index.html">← All Guides</a>
+      <a href="#inside">What's Inside</a>
+      <a href="#chapters">Chapters</a>
+    </div>
+    <a href="#buy" class="btn btn-primary" style="padding:10px 20px; font-size:14px;">Get the Guide</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="hero-copy">
+      <div class="kicker">A HOMEGUARD EBOOK</div>
+      <h1 class="headline">The Pest-Free<br>Home<span class="accent">.</span></h1>
+      <p class="sub">Small daily resets for mind, body, and habits — plus a full bonus book covering mental health, physical health, cooking, self-discipline, and personal growth.</p>
+
+      <div class="price-row">
+        <span class="price-now">$19.99</span>
+        <span class="price-was">$79</span>
+        <span class="price-off">76% OFF</span>
+      </div>
+
+      <div class="cta-row" id="buy">
+        <div id="paypal-button-container" style="min-width:260px; max-width:320px;"></div>
+        <a href="#inside" class="btn btn-ghost">👇 See what's inside</a>
+      </div>
+      <p id="paypal-status" style="font-size:13px; color:var(--dim); margin-top:10px;"></p>
+    </div>
+  </div>
+</header>
+
+<div class="trust">
+  <div class="wrap">
+    <span><strong>50 pages</strong> across two books</span>
+    <span><strong>8 chapters</strong> — mind, body, and habits</span>
+    <span><strong>30+ daily habits</strong> — mental & physical</span>
+    <span><strong>2 books</strong> for the price of one</span>
+  </div>
+</div>
+
+<section id="reviews-section">
+  <div class="wrap">
+    <div class="section-head" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
+      <div>
+        <div class="kicker">CUSTOMER REVIEWS</div>
+        <h2 id="reviews-heading">Customer reviews</h2>
+      </div>
+      <div id="carousel-nav" style="display:flex; align-items:center; gap:10px; font-size:14px; color:var(--dim);">
+        <span id="page-indicator">1/1</span>
+        <button id="prev-page" class="review-nav-btn" aria-label="Previous">‹</button>
+        <button id="next-page" class="review-nav-btn" aria-label="Next">›</button>
+      </div>
+    </div>
+
+    <div id="reviews-carousel" style="display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:12px;"></div>
+
+    <button id="view-all-reviews" class="btn btn-ghost" style="margin-top:20px;">View all reviews</button>
+  </div>
+</section>
+
+<!-- Modal -->
+<div id="reviews-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:100; align-items:center; justify-content:center; padding:24px;">
+  <div style="background:var(--near-black); border-radius:10px; max-width:640px; width:100%; max-height:80vh; display:flex; flex-direction:column; border:1px solid rgba(255,255,255,0.1);">
+    <div style="display:flex; align-items:center; justify-content:space-between; padding:20px 24px; border-bottom:1px solid rgba(255,255,255,0.1);">
+      <h3 id="modal-title" style="font-family:'Archivo Black',sans-serif; font-size:18px;">Reviews</h3>
+      <button id="close-modal" style="background:none; border:none; color:var(--white); font-size:22px; cursor:pointer; line-height:1;">&times;</button>
+    </div>
+    <div id="modal-review-list" style="padding:20px 24px; overflow-y:auto;"></div>
+  </div>
+</div>
+
+<style>
+  .review-card {
+    border:1px solid rgba(255,255,255,0.12); border-radius:10px; padding:20px;
+    background:var(--near-black); display:flex; flex-direction:column; gap:8px;
+  }
+  .review-stars { color:#ffb800; font-size:15px; letter-spacing:2px; }
+  .review-name { font-size:13px; color:var(--dim); }
+  .review-comment { font-size:14px; color:var(--white); line-height:1.5; }
+  .review-nav-btn {
+    width:30px; height:30px; border-radius:50%; border:1px solid rgba(255,255,255,0.15);
+    background:transparent; color:var(--white); cursor:pointer; font-size:16px;
+  }
+  .review-nav-btn:hover { border-color:var(--red); }
+  .review-nav-btn:disabled { opacity:0.35; cursor:not-allowed; }
+  .modal-review-row { padding:14px 0; border-bottom:1px solid rgba(255,255,255,0.08); }
+  .modal-review-row:last-child { border-bottom:none; }
+  @media (max-width:720px) {
+    #reviews-carousel { grid-template-columns:1fr !important; }
+  }
+</style>
+
+<script>
+(function () {
+  var SUPABASE_URL = "https://zarasbzkxjlsiydniitk.supabase.co";
+  var FUNCTIONS_BASE = SUPABASE_URL + "/functions/v1";
+  var SUPABASE_ANON_KEY = "sb_publishable_3lDfYDfblJDSnh62F8wHSQ_c789CdX5";
+  var PRODUCT_ID = "pest-free-home";
+
+  var PAGE_SIZE = 3;
+  var currentPage = 0;
+  var reviews = [];
+
+  function stars(n) {
+    return '★'.repeat(n) + '☆'.repeat(5 - n);
+  }
+
+  function renderCarousel() {
+    var container = document.getElementById('reviews-carousel');
+    var totalPages = Math.max(1, Math.ceil(reviews.length / PAGE_SIZE));
+    currentPage = Math.min(currentPage, totalPages - 1);
+
+    var slice = reviews.slice(currentPage * PAGE_SIZE, currentPage * PAGE_SIZE + PAGE_SIZE);
+    container.innerHTML = slice.map(function (r) {
+      return '<div class="review-card">' +
+        '<div class="review-stars">' + stars(r.rating) + '</div>' +
+        '<div class="review-name">' + escapeHtml(r.name) + '</div>' +
+        (r.comment ? '<div class="review-comment">' + escapeHtml(r.comment) + '</div>' : '') +
+        '</div>';
+    }).join('');
+
+    document.getElementById('page-indicator').textContent = (currentPage + 1) + '/' + totalPages;
+    document.getElementById('prev-page').disabled = currentPage === 0;
+    document.getElementById('next-page').disabled = currentPage >= totalPages - 1;
+  }
+
+  function escapeHtml(str) {
+    var div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  document.getElementById('prev-page').addEventListener('click', function () {
+    if (currentPage > 0) { currentPage--; renderCarousel(); }
+  });
+  document.getElementById('next-page').addEventListener('click', function () {
+    currentPage++; renderCarousel();
+  });
+
+  document.getElementById('view-all-reviews').addEventListener('click', function () {
+    document.getElementById('modal-title').textContent = reviews.length + ' Reviews';
+    document.getElementById('modal-review-list').innerHTML = reviews.map(function (r) {
+      return '<div class="modal-review-row">' +
+        '<div class="review-stars">' + stars(r.rating) + '</div>' +
+        '<div class="review-name">' + escapeHtml(r.name) + '</div>' +
+        (r.comment ? '<div class="review-comment">' + escapeHtml(r.comment) + '</div>' : '') +
+        '</div>';
+    }).join('');
+    document.getElementById('reviews-modal').style.display = 'flex';
+  });
+  document.getElementById('close-modal').addEventListener('click', function () {
+    document.getElementById('reviews-modal').style.display = 'none';
+  });
+  document.getElementById('reviews-modal').addEventListener('click', function (e) {
+    if (e.target === this) this.style.display = 'none';
+  });
+
+  fetch(FUNCTIONS_BASE + '/get-reviews?product=' + encodeURIComponent(PRODUCT_ID), {
+    headers: { 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY, 'apikey': SUPABASE_ANON_KEY }
+  })
+    .then(function (res) { return res.json(); })
+    .then(function (data) {
+      reviews = data.reviews || [];
+      if (!reviews.length) {
+        document.getElementById('reviews-heading').textContent = 'Customer reviews';
+        document.getElementById('reviews-carousel').innerHTML =
+          '<p style="color:var(--dim); font-size:14px; grid-column:1/-1;">No reviews yet — be the first to leave one after your purchase!</p>';
+        document.getElementById('carousel-nav').style.display = 'none';
+        document.getElementById('view-all-reviews').style.display = 'none';
+        return;
+      }
+      document.getElementById('reviews-heading').textContent =
+        'Customer reviews (' + data.average.toFixed(1) + '★, ' + data.count + ')';
+      renderCarousel();
+    })
+    .catch(function () {
+      document.getElementById('reviews-heading').textContent = 'Customer reviews';
+      document.getElementById('reviews-carousel').innerHTML =
+        '<p style="color:var(--dim); font-size:14px; grid-column:1/-1;">No reviews yet — be the first to leave one after your purchase!</p>';
+      document.getElementById('carousel-nav').style.display = 'none';
+      document.getElementById('view-all-reviews').style.display = 'none';
+    });
+})();
+</script>
+
+<section id="inside">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker">THE PROBLEM</div>
+      <h2>You've tried the big overhaul. It didn't stick.</h2>
+    </div>
+    <div class="contrast">
+      <div class="side">
+        <div class="mark no">✕</div>
+        <div><div class="label-big">All-or-nothing</div><div class="label-small">total lifestyle overhauls that burn out fast</div></div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="side">
+        <div class="mark yes">✓</div>
+        <div><div class="label-big">Small resets</div><div class="label-small">daily habits that actually last</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap preview">
+    <div>
+      <div class="kicker">WHAT'S INSIDE</div>
+      <h2>Two books, one purchase.</h2>
+    </div>
+    <div class="preview-list">
+      <div class="preview-item"><div class="icon">—</div><div><h4>8 core reset chapters</h4><p>Morning routine, food, movement, sleep, mental clarity, stress, and lasting habits.</p></div></div>
+      <div class="preview-item"><div class="icon">—</div><div><h4>Small, repeatable resets</h4><p>No drastic overhauls — just daily habits designed to actually stick.</p></div></div>
+      <div class="preview-item"><div class="icon">—</div><div><h4>30+ habits across 5 categories</h4><p>Mental health, physical health, cooking, self-discipline, and personal growth.</p></div></div>
+      <div class="preview-item"><div class="icon">—</div><div><h4>Bonus: full daily checklist</h4><p>A printable-style daily checklist to track it all — included free.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="chapters">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker">CHAPTER GUIDE</div>
+      <h2>Eight chapters, plus a full bonus book.</h2>
+    </div>
+    <div class="chapter-grid">
+      <div class="chapter-cell"><div class="chapter-num">01</div><h3>Introduction</h3><p>Small resets over big overhauls.</p></div>
+      <div class="chapter-cell"><div class="chapter-num">02</div><h3>The Morning Reset</h3><p>How your morning shapes your day.</p></div>
+      <div class="chapter-cell"><div class="chapter-num">03</div><h3>Eating for Energy</h3><p>Not restriction, just real fuel.</p></div>
+      <div class="chapter-cell"><div class="chapter-num">04</div><h3>Movement That Sticks</h3><p>Exercise you'll actually keep doing.</p></div>
+      <div class="chapter-cell"><div class="chapter-num">05</div><h3>The Sleep Reset</h3><p>Why sleep is the most underrated lever.</p></div>
+      <div class="chapter-cell"><div class="chapter-num">06</div><h3>Mental Clarity & Focus</h3><p>Journaling, single-tasking, boundaries.</p></div>
+      <div class="chapter-cell"><div class="chapter-num">07</div><h3>Stress & Emotional Reset</h3><p>Daily tools to manage stress before it manages you.</p></div>
+      <div class="chapter-cell"><div class="chapter-num">08</div><h3>Building Habits That Last</h3><p>Systems over willpower.</p></div>
+      <div class="chapter-cell"><div class="chapter-num">B</div><h3>Bonus Book</h3><p>30+ habits: mental health, physical health, cooking, discipline, growth.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="final-cta">
+  <div class="wrap">
+    <h2>Stop starting over. Start resetting, one small habit at a time.</h2>
+    <p>Get both books — 8 core chapters plus 30+ bonus habits — for less than a single self-help book.</p>
+    <div class="cta-row" style="justify-content:center;">
+      <a href="#buy" class="btn btn-primary">Buy the ebook — $19.99</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-top">
+      <div class="footer-tagline">
+        <a href="index.html" class="logo">Pure<span style="color:var(--red)">Health</span>Guide</a>
+        <p>Your path to wellness starts here.</p>
+      </div>
+      <div class="footer-social">
+        <a href="#" target="_blank" rel="noopener" aria-label="YouTube">▶</a>
+        <a href="#" target="_blank" rel="noopener" aria-label="TikTok">♪</a>
+      </div>
+    </div>
+
+    <div class="disclaimer">
+      <strong>LEGAL DISCLAIMER</strong>
+      All content and information provided by PureHealthGuide, including but not limited to text, graphics, images, and guide content, is for educational and informational purposes only. This platform does not provide medical advice, professional diagnosis, opinion, or treatment. The information provided is not a substitute for professional medical expertise or treatment.
+      <br><br>
+      Always seek the advice of your physician or other qualified health provider with any questions you may have regarding a medical condition. Never disregard professional medical advice or delay in seeking it because of something you have read or received on this platform. PureHealthGuide is not responsible or liable for any advice, course of treatment, diagnosis, or any other information, services, or products that you obtain through this site. Reliance on any information provided is solely at your own risk.
+    </div>
+
+    <div class="footer-bottom">
+      <span>© 2026 PureHealthGuide. All rights reserved.</span>
+      <span>Not medical advice. Consult your physician.</span>
+    </div>
+  </div>
+</footer>
+
+
+<!-- Payment loading overlay -->
+<div id="payment-loading-overlay" style="display:none; position:fixed; inset:0; background:rgba(10,10,10,0.92); z-index:9999; align-items:center; justify-content:center; flex-direction:column; text-align:center; padding:24px;">
+  <div style="width:48px; height:48px; border:4px solid rgba(255,255,255,0.15); border-top-color:#c8291f; border-radius:50%; animation:payment-spin 0.8s linear infinite; margin-bottom:20px;"></div>
+  <div id="payment-loading-text" style="color:#f5f5f3; font-size:16px; font-weight:600; margin-bottom:6px;">Preparing secure checkout…</div>
+  <div id="payment-loading-subtext" style="color:#9a9a95; font-size:13px;">This only takes a second.</div>
+</div>
+<style>
+  @keyframes payment-spin { to { transform: rotate(360deg); } }
+</style>
+<script>
+  function showPaymentOverlay(text, subtext) {
+    document.getElementById('payment-loading-text').textContent = text;
+    document.getElementById('payment-loading-subtext').textContent = subtext;
+    document.getElementById('payment-loading-overlay').style.display = 'flex';
+  }
+  function hidePaymentOverlay() {
+    document.getElementById('payment-loading-overlay').style.display = 'none';
+  }
+</script>
+
+<script src="https://www.paypal.com/sdk/js?client-id=BAAkttcr96LWYrYpD_NV5vY4G3g3WJEqPqXqc1MCiMAHL7CvMT2f4VRBXOrRL9aa8h158TjlI57ugs2aR0&currency=USD&enable-funding=card"></script>
+<script>
+  // ---- Fill these in once, then leave them alone ----
+  var SUPABASE_URL = "https://zarasbzkxjlsiydniitk.supabase.co";
+  var FUNCTIONS_BASE = SUPABASE_URL + "/functions/v1";
+  var SUPABASE_ANON_KEY = "sb_publishable_3lDfYDfblJDSnh62F8wHSQ_c789CdX5";
+  var PRODUCT_ID = "pest-free-home";
+  // -----------------------------------------------------
+
+  var statusEl = document.getElementById('paypal-status');
+
+  paypal.Buttons({
+    onClick: function () { showPaymentOverlay('Preparing secure checkout…', 'Connecting you to PayPal.'); },
+    onCancel: function () { hidePaymentOverlay(); },
+    style: { layout: 'vertical', color: 'blue', shape: 'rect', label: 'pay' },
+
+    createOrder: function () {
+      statusEl.textContent = '';
+      showPaymentOverlay('Preparing secure checkout…', 'Connecting you to PayPal.');
+      return fetch(FUNCTIONS_BASE + '/create-paypal-order', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+          'apikey': SUPABASE_ANON_KEY
+        },
+        body: JSON.stringify({ product: PRODUCT_ID })
+      })
+        .then(function (res) { return res.json(); })
+        .then(function (data) { hidePaymentOverlay(); return data.id; });
+    },
+
+    onApprove: function (data) {
+      statusEl.textContent = 'Confirming your payment…';
+      showPaymentOverlay('Payment confirmed!', 'Preparing your download…');
+      return fetch(FUNCTIONS_BASE + '/capture-paypal-order', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+          'apikey': SUPABASE_ANON_KEY
+        },
+        body: JSON.stringify({ orderID: data.orderID })
+      })
+        .then(function (res) { return res.json(); })
+        .then(function (result) {
+          if (result.success) {
+            window.location.href = 'thank-you-pest-free-home.html?order=' + encodeURIComponent(data.orderID);
+          } else {
+            hidePaymentOverlay();
+            statusEl.textContent = 'Payment did not complete. Please try again.';
+          }
+        });
+    },
+
+    onError: function () {
+      hidePaymentOverlay();
+      statusEl.textContent = 'Something went wrong. Please try again.';
+    }
+  }).render('#paypal-button-container');
+</script>
+
+<!--
+  REVIEWS CAROUSEL + "VIEW ALL" MODAL
+  Paste this into each book-*.html page (e.g. inside a new <section>).
+  Set PRODUCT_ID to match that book, same value used on its thank-you page.
+-->
+
+
+</body>
+</html>
