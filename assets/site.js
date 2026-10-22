@@ -92,6 +92,96 @@
   // ---- Footer year ----
   document.querySelectorAll('[data-year]').forEach(function (el) { el.textContent = new Date().getFullYear(); });
 
+  // ---- "Look inside" flip-book: <div class="flip" data-pages='["a.webp", ...]'> ----
+  document.querySelectorAll('.flip').forEach(function (el) {
+    var pages = JSON.parse(el.getAttribute('data-pages'));
+    var end = pages.length;              // index `end` = the "get the full book" card
+    var i = 0, busy = false;
+    var book = el.querySelector('.flip-book');
+    var under = el.querySelector('.flip-page img');
+    var leaf = el.querySelector('.flip-leaf');
+    var front = leaf.querySelector('.front img');
+    var endCard = el.querySelector('.flip-end');
+    var count = el.querySelector('.flip-count');
+    var prev = el.querySelector('[data-flip="prev"]');
+    var next = el.querySelector('[data-flip="next"]');
+    var thumbs = el.querySelectorAll('.flip-thumbs button');
+
+    pages.forEach(function (src) { var im = new Image(); im.src = src; });   // small set: preload all
+
+    function render() {
+      var cur = Math.min(i, end - 1);
+      front.src = pages[cur];
+      under.src = pages[Math.min(cur + 1, end - 1)];
+      endCard.classList.toggle('show', i === end);
+      count.textContent = i === end ? 'End of preview' : 'Page ' + (i + 1) + ' of ' + end;
+      prev.disabled = i === 0;
+      next.disabled = i === end;
+      thumbs.forEach(function (t, k) { t.classList.toggle('on', k === i); });
+    }
+    function settle(fn) {
+      var done = false;
+      function finish() { if (done) return; done = true; fn(); }
+      leaf.addEventListener('transitionend', finish, { once: true });
+      setTimeout(finish, 1100);
+    }
+    function snap(rotated) {             // move the leaf without animating
+      leaf.classList.add('instant');
+      leaf.classList.toggle('turn', rotated);
+      void leaf.offsetWidth;
+      leaf.classList.remove('instant');
+    }
+    function go(dir) {
+      var target = i + dir;
+      if (busy || target < 0 || target > end) return;
+      if (reduceMotion || target === end || i === end) { i = target; render(); return; }
+      busy = true;
+      if (dir > 0) {
+        front.src = pages[i]; under.src = pages[target];
+        leaf.classList.add('turn');
+        settle(function () { i = target; snap(false); render(); busy = false; });
+      } else {
+        under.src = pages[i]; front.src = pages[target];
+        snap(true);
+        leaf.classList.remove('turn');
+        settle(function () { i = target; render(); busy = false; });
+      }
+    }
+
+    prev.addEventListener('click', function () { go(-1); });
+    next.addEventListener('click', function () { go(1); });
+    thumbs.forEach(function (t, k) { t.addEventListener('click', function () { if (!busy) { i = k; render(); } }); });
+    el.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight') { e.preventDefault(); go(1); }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); }
+    });
+
+    // swipe on touch, tap to zoom
+    var startX = null, moved = false;
+    book.addEventListener('pointerdown', function (e) { startX = e.clientX; moved = false; });
+    book.addEventListener('pointermove', function (e) { if (startX !== null && Math.abs(e.clientX - startX) > 10) moved = true; });
+    book.addEventListener('pointerup', function (e) {
+      if (startX === null) return;
+      var dx = e.clientX - startX; startX = null;
+      if (Math.abs(dx) > 40) { go(dx < 0 ? 1 : -1); return; }
+      if (!moved && !busy && i < end && e.target.closest('.flip-leaf')) openZoom(pages[i]);
+    });
+
+    var zoom = document.querySelector('.zoom');
+    function openZoom(src) {
+      if (!zoom) return;
+      zoom.querySelector('img').src = src;
+      zoom.classList.add('show');
+    }
+    if (zoom && !zoom.dataset.bound) {
+      zoom.dataset.bound = '1';
+      zoom.addEventListener('click', function () { zoom.classList.remove('show'); });
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape') zoom.classList.remove('show'); });
+    }
+
+    render();
+  });
+
   // ---- Confetti (used on thank-you pages) ----
   window.celebrate = function () {
     if (reduceMotion) return;
