@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap">
-<link rel="stylesheet" href="/assets/site.css?v=4">
+<link rel="stylesheet" href="/assets/site.css?v=5">
 <script>document.documentElement.classList.add('js');</script>
 </head>
 <body>
@@ -24,7 +24,7 @@
 <nav class="nav">
   <div class="wrap">
     <a href="/" class="logo"><span class="logo-mark" aria-hidden="true">✦</span><span class="logo-text">Pure<span>Health</span>Guide</span></a>
-    <div class="nav-links"><a href="/">← All guides</a><a href="#inside">What's inside</a><a href="#chapters">Chapters</a><a href="#reviews-section">Reviews</a></div>
+    <div class="nav-links"><a href="/">← All guides</a><a href="#look-inside">Look inside</a><a href="#inside">What's inside</a><a href="#chapters">Chapters</a><a href="#reviews-section">Reviews</a></div>
     <a href="#buy" class="btn btn-primary btn-sm">Get the Guide <span class="arrow">→</span></a>
   </div>
 </nav>
@@ -62,6 +62,39 @@
 </header>
 
 <div class="wrap"><div class="tiles"><div class="reveal" style="--i:0"><div class="num"><span data-count="50">50</span></div><div class="unit">pages</div><div class="lbl">across two books</div></div><div class="reveal" style="--i:1"><div class="num"><span data-count="8">8</span></div><div class="unit">chapters</div><div class="lbl">mind, body, and habits</div></div><div class="reveal" style="--i:2"><div class="num"><span data-count="30">30</span><em>+</em></div><div class="unit">daily habits</div><div class="lbl">mental & physical</div></div><div class="reveal" style="--i:3"><div class="num"><span data-count="2">2</span></div><div class="unit">books</div><div class="lbl">for the price of one</div></div></div></div>
+
+<section id="look-inside" class="look">
+  <div class="wrap look-grid">
+    <div class="look-copy reveal">
+      <div class="kicker">LOOK INSIDE</div>
+      <h2>Flip through <span class="serif grad">real pages.</span></h2>
+      <p>A free preview of 5 of the 50 pages inside — exactly what you'll download.</p>
+      <a href="#buy" class="btn btn-primary">Get all 50 pages — $9.99 <span class="arrow">→</span></a>
+      <div class="hint">Swipe, use the arrows, or tap a page to zoom.</div>
+    </div>
+    <div class="flip reveal" style="--i:1" tabindex="0" aria-label="Book preview" data-pages='["/assets/preview/reset-method/1.webp", "/assets/preview/reset-method/2.webp", "/assets/preview/reset-method/3.webp", "/assets/preview/reset-method/4.webp", "/assets/preview/reset-method/5.webp"]'>
+      <div class="flip-book">
+        <div class="flip-glow" aria-hidden="true"></div>
+        <div class="flip-page"><img src="/assets/preview/reset-method/2.webp" alt=""></div>
+        <div class="flip-leaf"><div class="face front"><img src="/assets/preview/reset-method/1.webp" alt="Preview page"></div><div class="face back"></div></div>
+        <div class="flip-end">
+          <div class="kicker">END OF PREVIEW</div>
+          <div class="big">Want the other 45 pages?</div>
+          <p>Get the full book instantly after checkout.</p>
+          <a href="#buy" class="btn btn-primary">Get it — $9.99 <span class="arrow">→</span></a>
+          <a href="/all-books" class="alt">or get all 6 guides for $49.99 →</a>
+        </div>
+      </div>
+      <div class="flip-controls">
+        <button type="button" data-flip="prev" aria-label="Previous page">‹</button>
+        <span class="flip-count">Page 1 of 5</span>
+        <button type="button" data-flip="next" aria-label="Next page">›</button>
+      </div>
+      <div class="flip-thumbs"><button type="button" aria-label="Page 1"><img src="/assets/preview/reset-method/1.webp" alt="" loading="lazy"></button><button type="button" aria-label="Page 2"><img src="/assets/preview/reset-method/2.webp" alt="" loading="lazy"></button><button type="button" aria-label="Page 3"><img src="/assets/preview/reset-method/3.webp" alt="" loading="lazy"></button><button type="button" aria-label="Page 4"><img src="/assets/preview/reset-method/4.webp" alt="" loading="lazy"></button><button type="button" aria-label="Page 5"><img src="/assets/preview/reset-method/5.webp" alt="" loading="lazy"></button></div>
+    </div>
+  </div>
+</section>
+<div class="zoom" aria-hidden="true"><img src="" alt=""><button type="button" aria-label="Close">×</button></div>
 
 <section id="reviews-section">
   <div class="wrap">
@@ -372,6 +405,6 @@
   }).render('#paypal-button-container');
 </script>
 
-<script src="/assets/site.js?v=4" defer></script>
+<script src="/assets/site.js?v=5" defer></script>
 </body>
 </html>
