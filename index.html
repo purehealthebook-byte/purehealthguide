@@ -3,443 +3,175 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PureHealthGuide — Never Age Again</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700&display=swap');
-
-  :root {
-    --black: #0a0a0a;
-    --near-black: #141414;
-    --white: #f5f5f3;
-    --dim: #9a9a95;
-    --red: #c8291f;
-    --red-glow: #ff3b30;
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
-  body {
-    background: var(--black);
-    color: var(--white);
-    font-family: 'Inter', sans-serif;
-    line-height: 1.6;
-    overflow-x: hidden;
-  }
-  a { color: inherit; }
-  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 32px; }
-
-  /* ---------- Nav ---------- */
-  nav {
-    position: sticky; top: 0; z-index: 50;
-    background: rgba(10,10,10,0.85);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-  }
-  nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 76px; }
-  .logo { font-family: 'Archivo Black', sans-serif; font-size: 20px; letter-spacing: -0.02em; }
-  .logo span { color: var(--red); }
-  .nav-links { display: flex; gap: 36px; font-size: 15px; color: var(--dim); }
-  .nav-links a { text-decoration: none; transition: color .2s; }
-  .nav-links a:hover { color: var(--white); }
-
-  /* ---------- Stats / social bar ---------- */
-  .statbar {
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-    background: var(--near-black);
-    padding: 14px 0;
-  }
-  .statbar .wrap {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 14px;
-  }
-  .live-stats { display: flex; gap: 22px; flex-wrap: wrap; font-size: 13px; color: var(--dim); }
-  .live-stats strong { color: var(--white); }
-  .live-dot {
-    display: inline-block; width: 6px; height: 6px; border-radius: 50%;
-    background: #4ade80; margin-right: 6px;
-    box-shadow: 0 0 0 0 rgba(74,222,128,0.6);
-    animation: pulse 2s infinite;
-  }
-  @keyframes pulse {
-    0% { box-shadow: 0 0 0 0 rgba(74,222,128,0.5); }
-    70% { box-shadow: 0 0 0 6px rgba(74,222,128,0); }
-    100% { box-shadow: 0 0 0 0 rgba(74,222,128,0); }
-  }
-  .social-links { display: flex; gap: 10px; }
-  .social-links a {
-    width: 32px; height: 32px;
-    border-radius: 6px;
-    border: 1px solid rgba(255,255,255,0.12);
-    display: flex; align-items: center; justify-content: center;
-    text-decoration: none;
-    color: var(--dim);
-    font-size: 14px;
-    transition: all .2s;
-  }
-  .social-links a:hover { border-color: var(--red); color: var(--white); }
-
-  /* ---------- Series (now first) ---------- */
-  #series { padding: 72px 0 88px; }
-  .section-head { max-width: 620px; margin-bottom: 44px; }
-  .kicker { color: var(--red); font-size: 13px; font-weight: 600; letter-spacing: 0.08em; margin-bottom: 14px; }
-  h2 {
-    font-family: 'Archivo Black', sans-serif;
-    font-size: clamp(28px, 3.4vw, 38px);
-    letter-spacing: -0.02em;
-    line-height: 1.08;
-  }
-  .section-head p { color: var(--dim); font-size: 16px; margin-top: 14px; }
-
-  .series-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-  .series-card {
-    display: flex; gap: 18px;
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 10px;
-    padding: 26px;
-    background: var(--near-black);
-    position: relative;
-    text-decoration: none;
-    color: inherit;
-    transition: border-color .2s, transform .15s;
-    cursor: pointer;
-  }
-  .series-card:hover { transform: translateY(-2px); }
-  .series-card.active { border-color: rgba(200,41,31,0.5); }
-  .series-card.active:hover { border-color: var(--red); }
-  .series-card[aria-disabled="true"] { cursor: default; }
-  .series-card[aria-disabled="true"]:hover { transform: none; border-color: rgba(255,255,255,0.12); }
-  .series-flag {
-    position: absolute; top: -10px; right: 18px;
-    background: var(--red); color: var(--white);
-    font-size: 10px; font-weight: 700; letter-spacing: 0.04em;
-    padding: 4px 9px; border-radius: 4px;
-  }
-  .series-icon {
-    width: 44px; height: 44px; border-radius: 10px;
-    background: rgba(255,255,255,0.06);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 18px; flex-shrink: 0;
-  }
-  .series-card.active .series-icon { background: rgba(200,41,31,0.18); color: var(--red); }
-  .series-body { flex: 1; min-width: 0; }
-  .series-stat { font-size: 11px; font-weight: 700; letter-spacing: 0.04em; color: #4ade80; margin-bottom: 8px; }
-  .series-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
-  .badge { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.02em; padding: 4px 9px; border-radius: 4px; }
-  .badge.live { background: var(--red); color: var(--white); }
-  .badge.soon { background: rgba(255,255,255,0.08); color: var(--dim); border: 1px solid rgba(255,255,255,0.15); }
-  .series-meta .price-was { font-size: 13px; color: var(--dim); text-decoration: line-through; }
-  .series-meta .price-now { font-size: 15px; font-weight: 700; color: var(--white); }
-  .series-meta .price-off { background: var(--red); color: var(--white); font-size: 11px; font-weight: 700; padding: 3px 7px; border-radius: 4px; }
-  .series-title-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-  .series-card h4 { font-size: 17px; font-weight: 600; line-height: 1.3; }
-  .series-card p { font-size: 13px; color: var(--dim); margin-top: 6px; }
-  .series-link { color: var(--dim); font-size: 16px; flex-shrink: 0; text-decoration: none; }
-  .series-link:hover { color: var(--white); }
-
-  /* ---------- Hero ---------- */
-  .hero { position: relative; padding: 88px 0 110px; overflow: hidden; border-top: 1px solid rgba(255,255,255,0.08); }
-  .hero::before {
-    content: ''; position: absolute; top: -20%; left: 50%;
-    width: 900px; height: 900px; transform: translateX(-50%);
-    background: radial-gradient(circle, rgba(200,41,31,0.18) 0%, rgba(200,41,31,0) 65%);
-    pointer-events: none;
-  }
-  .hero .wrap { position: relative; display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 64px; align-items: center; }
-  h1.headline { font-family: 'Archivo Black', sans-serif; font-size: clamp(40px, 5.2vw, 64px); line-height: 0.98; letter-spacing: -0.02em; margin-bottom: 24px; }
-  h1.headline .accent { color: var(--red); }
-  .hero p.sub { font-size: 18px; color: var(--dim); max-width: 46ch; margin-bottom: 36px; }
-  .price-row { display: flex; align-items: baseline; gap: 14px; margin-bottom: 36px; }
-  .price-now { font-family: 'Archivo Black', sans-serif; font-size: 40px; color: var(--white); }
-  .price-was { font-size: 20px; color: var(--dim); text-decoration: line-through; }
-  .price-off { background: var(--red); color: var(--white); font-size: 13px; font-weight: 700; padding: 5px 10px; border-radius: 4px; }
-  .cta-row { display: flex; gap: 16px; flex-wrap: wrap; }
-  .btn {
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 16px 28px; font-size: 15px; font-weight: 600; border-radius: 4px;
-    text-decoration: none; border: 1px solid transparent; cursor: pointer;
-    transition: transform .15s ease, background .2s ease, border-color .2s ease;
-  }
-  .btn:hover { transform: translateY(-1px); }
-  .btn-primary { background: var(--red); color: var(--white); }
-  .btn-primary:hover { background: var(--red-glow); }
-  .btn-ghost { background: transparent; color: var(--white); border-color: rgba(255,255,255,0.25); }
-  .btn-ghost:hover { border-color: var(--white); }
-  .hero-cover { position: relative; display: flex; justify-content: center; }
-  .hero-cover img { width: 100%; max-width: 340px; border-radius: 2px; box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.06); }
-
-  /* ---------- Trust bar ---------- */
-  .trust { border-top: 1px solid rgba(255,255,255,0.08); border-bottom: 1px solid rgba(255,255,255,0.08); padding: 28px 0; }
-  .trust .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 20px; font-size: 14px; color: var(--dim); }
-  .trust strong { color: var(--white); }
-
-  /* ---------- Section shared ---------- */
-  section { padding: 100px 0; }
-
-  /* ---------- Problem/solution ---------- */
-  .contrast {
-    display: grid; grid-template-columns: 1fr auto 1fr; gap: 24px; align-items: center;
-    border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 36px; background: var(--near-black);
-  }
-  .contrast .side { display: flex; align-items: center; gap: 16px; }
-  .contrast .mark {
-    width: 40px; height: 40px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-weight: 700; font-size: 18px; flex-shrink: 0;
-  }
-  .mark.no { background: rgba(200,41,31,0.15); color: var(--red); border: 1px solid rgba(200,41,31,0.4); }
-  .mark.yes { background: rgba(255,255,255,0.08); color: var(--white); border: 1px solid rgba(255,255,255,0.25); }
-  .contrast .side .label-big { font-size: 19px; font-weight: 600; }
-  .contrast .side .label-small { font-size: 14px; color: var(--dim); }
-  .contrast .arrow { color: var(--red); font-size: 22px; }
-
-  /* ---------- Mission ---------- */
-  .mission { text-align: center; padding: 90px 0; border-top: 1px solid rgba(255,255,255,0.08); border-bottom: 1px solid rgba(255,255,255,0.08); }
-  .mission .wrap { max-width: 720px; }
-  .mission .logo { font-size: 30px; margin-bottom: 18px; justify-content: center; display: flex; }
-  .mission p { font-size: 17px; color: var(--dim); }
-  .mission p .accent-line { color: var(--white); font-weight: 500; }
-
-  /* ---------- Pillars ---------- */
-  .pillars-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
-  .pillar-card {
-    border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 26px 22px;
-    background: var(--near-black);
-  }
-  .pillar-icon {
-    width: 42px; height: 42px; border-radius: 10px;
-    background: rgba(200,41,31,0.15); color: var(--red);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 18px; margin-bottom: 18px;
-  }
-  .pillar-card h4 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
-  .pillar-card p { font-size: 13px; color: var(--dim); }
-
-  /* ---------- Chapters ---------- */
-  .chapter-grid {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
-    background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 6px; overflow: hidden;
-  }
-  .chapter-cell { background: var(--black); padding: 32px 28px; }
-  .chapter-num { font-family: 'Archivo Black', sans-serif; color: var(--red); font-size: 14px; margin-bottom: 14px; }
-  .chapter-cell h3 { font-size: 17px; font-weight: 600; margin-bottom: 8px; }
-  .chapter-cell p { font-size: 14px; color: var(--dim); }
-
-  /* ---------- What's inside / preview ---------- */
-  .preview { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 64px; align-items: center; }
-  .preview-list { display: flex; flex-direction: column; gap: 22px; }
-  .preview-item { display: flex; gap: 16px; }
-  .preview-item .icon { color: var(--red); font-size: 18px; flex-shrink: 0; line-height: 1.5; }
-  .preview-item h4 { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
-  .preview-item p { font-size: 14px; color: var(--dim); }
-
-  /* ---------- Final CTA ---------- */
-  .final-cta { text-align: center; padding: 120px 0; position: relative; }
-  .final-cta::before {
-    content: ''; position: absolute; top: 0; left: 50%;
-    width: 700px; height: 700px; transform: translateX(-50%);
-    background: radial-gradient(circle, rgba(200,41,31,0.14) 0%, rgba(200,41,31,0) 65%);
-    pointer-events: none;
-  }
-  .final-cta .wrap { position: relative; }
-  .final-cta h2 { max-width: 700px; margin: 0 auto 20px; }
-  .final-cta p { color: var(--dim); font-size: 17px; margin-bottom: 40px; }
-
-  /* ---------- Footer ---------- */
-  footer { border-top: 1px solid rgba(255,255,255,0.08); padding: 56px 0 40px; }
-  .footer-top { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 24px; margin-bottom: 36px; }
-  .footer-tagline p { color: var(--dim); font-size: 14px; margin-top: 8px; max-width: 32ch; }
-  .footer-social { display: flex; gap: 10px; }
-  .footer-social a {
-    width: 34px; height: 34px; border-radius: 7px;
-    border: 1px solid rgba(255,255,255,0.12);
-    display: flex; align-items: center; justify-content: center;
-    text-decoration: none; color: var(--dim); font-size: 14px;
-    transition: all .2s;
-  }
-  .footer-social a:hover { border-color: var(--red); color: var(--white); }
-  .disclaimer {
-    border-top: 1px solid rgba(255,255,255,0.08);
-    padding-top: 28px;
-    font-size: 12px;
-    line-height: 1.7;
-    color: #6b6b66;
-  }
-  .disclaimer strong { color: var(--dim); display: block; margin-bottom: 8px; font-size: 12px; letter-spacing: 0.04em; }
-  .footer-bottom {
-    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
-    margin-top: 24px; font-size: 12px; color: #6b6b66;
-  }
-
-  @media (max-width: 860px) {
-    .hero .wrap { grid-template-columns: 1fr; }
-    .hero-cover { order: -1; }
-    .contrast { grid-template-columns: 1fr; text-align: left; }
-    .contrast .arrow { transform: rotate(90deg); }
-    .chapter-grid { grid-template-columns: 1fr; }
-    .preview { grid-template-columns: 1fr; }
-    .series-grid { grid-template-columns: 1fr; }
-    .pillars-grid { grid-template-columns: repeat(2, 1fr); }
-    .nav-links { display: none; }
-    .statbar .wrap { justify-content: center; text-align: center; }
-  }
-</style>
+<title>PureHealthGuide — Real health advice you can act on today</title>
+<meta name="description" content="Plain, provable guides that turn everyday food and simple habits into your most reliable wellness tool. $9.99 each, instant download.">
+<meta name="theme-color" content="#070707">
+<meta property="og:title" content="PureHealthGuide — Real health advice you can act on today">
+<meta property="og:description" content="Plain, provable guides that turn everyday food and simple habits into your most reliable wellness tool. $9.99 each, instant download.">
+<meta property="og:type" content="website">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="apple-touch-icon" href="favicon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap">
+<link rel="stylesheet" href="assets/site.css?v=2">
+<script>document.documentElement.classList.add('js');</script>
 </head>
 <body>
 
-<nav>
+<div class="progress" aria-hidden="true"></div>
+<nav class="nav">
   <div class="wrap">
-    <div class="logo">Pure<span>Health</span>Guide</div>
-    <div class="nav-links">
-      <a href="#series">The Series</a>
-    </div>
-    <a href="book-never-age-again.html" class="btn btn-primary" style="padding:10px 20px; font-size:14px;">Get the Guide</a>
+    <a href="index.html" class="logo"><span class="logo-mark" aria-hidden="true">✦</span><span class="logo-text">Pure<span>Health</span>Guide</span></a>
+    <div class="nav-links"><a href="#series">The Series</a><a href="#approach">Our Approach</a><a href="#faq">FAQ</a></div>
+    <a href="book-never-age-again.html" class="btn btn-primary btn-sm">Get the Guide <span class="arrow">→</span></a>
   </div>
 </nav>
 
-<div class="statbar">
+<header class="hero-home">
+  <div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div class="gridlines" aria-hidden="true"></div>
   <div class="wrap">
-    <div class="live-stats">
-      <span><strong id="fb-count">18K</strong> followers</span>
+    <div>
+      <div class="pill reveal"><span class="tag">NEW</span> 6 guides now live — <b>$9.99 each</b></div>
+      <h1 class="hero-title reveal" style="--i:1">Feel better.<br>Look younger.<br><span class="serif grad">Start in your kitchen.</span></h1>
+      <p class="hero-sub reveal" style="--i:2">Real health advice should be plain, provable, and something you can act on today. <b>PureHealthGuide turns everyday food and simple habits into your most reliable wellness tool</b> — one guide at a time.</p>
+      <div class="cta-row reveal" style="--i:3">
+        <a href="#series" class="btn btn-primary">Browse the guides <span class="arrow">→</span></a>
+        <a href="book-never-age-again.html" class="btn btn-ghost">Start with Never Age Again</a>
+      </div>
+      <div class="hero-meta reveal" style="--i:4">
+        <div><strong><span data-count="18" data-suffix="K">18K</span></strong>followers</div>
+        <div><strong><span data-count="6">6</span></strong>guides in the series</div>
+        <div><strong>⚡</strong>instant download</div>
+      </div>
     </div>
-    <div class="social-links">
-      <a href="#" target="_blank" rel="noopener" aria-label="YouTube">▶</a>
-      <a href="#" target="_blank" rel="noopener" aria-label="TikTok">♪</a>
-    </div>
+    <div class="fan reveal" style="--i:2"><a href="book-reset-method.html" style="--x:-0.82; --y:0.1; --r:-14deg; --z:1" aria-label="The Reset Method"><div class="cover c-reset-method"><div class="cover-brand">PureHealthGuide</div><div class="cover-rule"></div><div class="cover-title">The<br>Reset<br>Method</div><div class="cover-glyph" aria-hidden="true">🌱</div><div class="cover-foot">Mind · Body · Habits</div></div></a><a href="book-kitchen-magic.html" style="--x:-0.42; --y:0.03; --r:-7deg; --z:2" aria-label="Kitchen Magic"><div class="cover c-kitchen-magic"><div class="cover-brand">PureHealthGuide</div><div class="cover-rule"></div><div class="cover-title">Kitchen<br>Magic</div><div class="cover-sub">Restaurant secrets, made at home</div><div class="cover-glyph" aria-hidden="true">🍳</div><div class="cover-foot">+ Bonus meal book</div></div></a><a href="book-never-age-again.html" style="--x:0; --y:0; --r:0deg; --z:5" aria-label="Never Age Again"><div class="cover c-never-age-again"><div class="cover-brand">PureHealthGuide</div><div class="cover-rule"></div><div class="cover-title">Never<br>Age<br>Again</div><div class="cover-glyph" aria-hidden="true">✨</div><div class="cover-foot">Anti-aging · Clear skin</div></div></a><a href="book-blend-bible.html" style="--x:0.42; --y:0.03; --r:7deg; --z:2" aria-label="The Mix &amp; Match Healthy Method"><div class="cover c-blend-bible"><div class="cover-brand">PureHealthGuide</div><div class="cover-rule"></div><div class="cover-title">Mix &amp;<br>Match</div><div class="cover-sub">The Healthy Method</div><div class="cover-glyph" aria-hidden="true">🥤</div><div class="cover-foot">Food · Smoothies · Habits</div></div></a><a href="book-fat-loss-reset.html" style="--x:0.82; --y:0.1; --r:14deg; --z:1" aria-label="Learn How to Lose Belly Fat in under 10 Mins"><div class="cover c-fat-loss-reset"><div class="cover-brand">PureHealthGuide</div><div class="cover-rule"></div><div class="cover-title">Lose<br>Belly<br>Fat</div><div class="cover-sub">In under 10 mins</div><div class="cover-glyph" aria-hidden="true">🔥</div><div class="cover-foot">Food · Habits · Results</div></div></a></div>
   </div>
-</div>
+</header>
+
+<div class="marquee" aria-hidden="true"><div class="marquee-track"><span>Anti-aging from the kitchen</span><span>Restaurant secrets at home</span><span>Small daily resets</span><span>Healthier treats</span><span>Smoothies & protein combos</span><span>Natural pest control</span><span>Instant digital download</span><span>Anti-aging from the kitchen</span><span>Restaurant secrets at home</span><span>Small daily resets</span><span>Healthier treats</span><span>Smoothies & protein combos</span><span>Natural pest control</span><span>Instant digital download</span></div></div>
 
 <section id="series">
   <div class="wrap">
-    <div class="section-head">
+    <div class="section-head reveal">
       <div class="kicker">THE PUREHEALTHGUIDE SERIES</div>
-      <h2>Four guides. One food-first approach.</h2>
-      <p>Never Age Again is the first release. The rest of the series is in progress.</p>
+      <h2>6 guides. <span class="serif grad">One simple idea.</span></h2>
+      <p>Everyday ingredients and small habits, explained plainly. Pick the one that fits where you are right now.</p>
     </div>
     <div class="series-grid">
-      <a href="book-never-age-again.html" class="series-card active">
-        <span class="series-flag">NEW</span>
-        <div class="series-icon">🔥</div>
-        <div class="series-body">
-          <div class="series-stat">1.2K+ READERS</div>
-          <div class="series-meta">
-            <span class="badge live">BUY NOW</span>
-            <span class="price-now">$9.99</span>
-            <span class="price-off">67% OFF</span>
-          </div>
-          <div class="series-title-row">
-            <h4>Never Age Again</h4>
-            <span class="series-link">↗</span>
-          </div>
-          <p>Anti-aging & clear skin, from the kitchen.</p>
+      <a href="book-never-age-again.html" class="book-card spot tilt reveal c-never-age-again" style="--i:0">
+        <div class="stage"><span class="flag">BESTSELLER</span><span class="off">67% OFF</span><div class="book3d"><div class="cover c-never-age-again"><div class="cover-brand">PureHealthGuide</div><div class="cover-rule"></div><div class="cover-title">Never<br>Age<br>Again</div><div class="cover-glyph" aria-hidden="true">✨</div><div class="cover-foot">Anti-aging · Clear skin</div></div></div></div>
+        <div class="body">
+          <div class="readers"><span class="live-dot"></span>1.2K+ READERS</div>
+          <h3>Never Age Again</h3>
+          <p>Anti-aging &amp; clear skin, from the kitchen.</p>
+          <div class="buy-row"><span class="price">$9.99</span><span class="go" aria-hidden="true">↗</span></div>
         </div>
       </a>
-
-      <a href="book-reset-method.html" class="series-card active">
-        <div class="series-icon">🌱</div>
-        <div class="series-body">
-          <div class="series-meta">
-            <span class="badge live">BUY NOW</span>
-            <span class="price-now">$9.99</span>
-            <span class="price-off">87% OFF</span>
-          </div>
-          <div class="series-title-row"><h4>The Reset Method</h4><span class="series-link">↗</span></div>
+      <a href="book-reset-method.html" class="book-card spot tilt reveal c-reset-method" style="--i:1">
+        <div class="stage"><span class="off">87% OFF</span><div class="book3d"><div class="cover c-reset-method"><div class="cover-brand">PureHealthGuide</div><div class="cover-rule"></div><div class="cover-title">The<br>Reset<br>Method</div><div class="cover-glyph" aria-hidden="true">🌱</div><div class="cover-foot">Mind · Body · Habits</div></div></div></div>
+        <div class="body">
+          
+          <h3>The Reset Method</h3>
           <p>Small daily resets for mind, body, and lasting habits.</p>
+          <div class="buy-row"><span class="price">$9.99</span><span class="go" aria-hidden="true">↗</span></div>
         </div>
       </a>
-
-      <a href="book-kitchen-magic.html" class="series-card active">
-        <div class="series-icon">🍳</div>
-        <div class="series-body">
-          <div class="series-meta">
-            <span class="badge live">BUY NOW</span>
-            <span class="price-now">$9.99</span>
-            <span class="price-off">87% OFF</span>
-          </div>
-          <div class="series-title-row"><h4>Kitchen Magic</h4><span class="series-link">↗</span></div>
+      <a href="book-kitchen-magic.html" class="book-card spot tilt reveal c-kitchen-magic" style="--i:2">
+        <div class="stage"><span class="off">87% OFF</span><div class="book3d"><div class="cover c-kitchen-magic"><div class="cover-brand">PureHealthGuide</div><div class="cover-rule"></div><div class="cover-title">Kitchen<br>Magic</div><div class="cover-sub">Restaurant secrets, made at home</div><div class="cover-glyph" aria-hidden="true">🍳</div><div class="cover-foot">+ Bonus meal book</div></div></div></div>
+        <div class="body">
+          
+          <h3>Kitchen Magic</h3>
           <p>Restaurant secrets and homemade creations, made in your kitchen.</p>
+          <div class="buy-row"><span class="price">$9.99</span><span class="go" aria-hidden="true">↗</span></div>
         </div>
       </a>
-
-      <a href="book-blend-bible.html" class="series-card active">
-        <div class="series-icon">🥤</div>
-        <div class="series-body">
-          <div class="series-meta">
-            <span class="badge live">BUY NOW</span>
-            <span class="price-now">$9.99</span>
-            <span class="price-off">87% OFF</span>
-          </div>
-          <div class="series-title-row"><h4>The Mix & Match Healthy Method</h4><span class="series-link">↗</span></div>
+      <a href="book-blend-bible.html" class="book-card spot tilt reveal c-blend-bible" style="--i:0">
+        <div class="stage"><span class="off">87% OFF</span><div class="book3d"><div class="cover c-blend-bible"><div class="cover-brand">PureHealthGuide</div><div class="cover-rule"></div><div class="cover-title">Mix &amp;<br>Match</div><div class="cover-sub">The Healthy Method</div><div class="cover-glyph" aria-hidden="true">🥤</div><div class="cover-foot">Food · Smoothies · Habits</div></div></div></div>
+        <div class="body">
+          
+          <h3>The Mix &amp; Match Healthy Method</h3>
           <p>Your guide to being healthy — food, smoothies, and daily habits.</p>
+          <div class="buy-row"><span class="price">$9.99</span><span class="go" aria-hidden="true">↗</span></div>
         </div>
       </a>
-
-      <a href="book-fat-loss-reset.html" class="series-card active">
-        <div class="series-icon">🔥</div>
-        <div class="series-body">
-          <div class="series-meta">
-            <span class="badge live">BUY NOW</span>
-            <span class="price-now">$9.99</span>
-            <span class="price-off">87% OFF</span>
-          </div>
-          <div class="series-title-row"><h4>Learn How to Loss Belly Fat in under 10 Mins</h4><span class="series-link">↗</span></div>
+      <a href="book-fat-loss-reset.html" class="book-card spot tilt reveal c-fat-loss-reset" style="--i:1">
+        <div class="stage"><span class="off">87% OFF</span><div class="book3d"><div class="cover c-fat-loss-reset"><div class="cover-brand">PureHealthGuide</div><div class="cover-rule"></div><div class="cover-title">Lose<br>Belly<br>Fat</div><div class="cover-sub">In under 10 mins</div><div class="cover-glyph" aria-hidden="true">🔥</div><div class="cover-foot">Food · Habits · Results</div></div></div></div>
+        <div class="body">
+          
+          <h3>Learn How to Lose Belly Fat in under 10 Mins</h3>
           <p>Why belly fat happens, how it works, and the food and habits that fix it.</p>
+          <div class="buy-row"><span class="price">$9.99</span><span class="go" aria-hidden="true">↗</span></div>
         </div>
       </a>
-
-      <a href="book-pest-free-home.html" class="series-card active">
-        <div class="series-icon">🏠</div>
-        <div class="series-body">
-          <div class="series-meta">
-            <span class="badge live">BUY NOW</span>
-            <span class="price-now">$9.99</span>
-            <span class="price-off">87% OFF</span>
-          </div>
-          <div class="series-title-row"><h4>The Pest-Free Home</h4><span class="series-link">↗</span></div>
+      <a href="book-pest-free-home.html" class="book-card spot tilt reveal c-pest-free-home" style="--i:2">
+        <div class="stage"><span class="off">87% OFF</span><div class="book3d"><div class="cover c-pest-free-home"><div class="cover-brand">HomeGuard</div><div class="cover-rule"></div><div class="cover-title small">The<br>Pest-Free<br>Home</div><div class="cover-glyph" aria-hidden="true">🏠</div><div class="cover-foot">Natural · Affordable</div></div></div></div>
+        <div class="body">
+          
+          <h3>The Pest-Free Home</h3>
           <p>Natural, affordable ways to get rid of pests and keep them out — by HomeGuard.</p>
+          <div class="buy-row"><span class="price">$9.99</span><span class="go" aria-hidden="true">↗</span></div>
         </div>
       </a>
     </div>
   </div>
 </section>
 
-<section class="mission" style="border-top:1px solid rgba(255,255,255,0.08);">
-  <div class="wrap">
-    <div class="logo">Pure<span style="color:var(--red)">Health</span>Guide</div>
-    <p>We believe real health advice should be plain, provable, and something you can act on today — not another product to buy. <span class="accent-line">PureHealthGuide turns everyday food into your most reliable wellness tool</span>, one guide at a time.</p>
+<section class="mission" id="approach">
+  <div class="aurora" aria-hidden="true" style="opacity:.5"><i></i></div>
+  <div class="wrap reveal">
+    <div class="kicker">OUR MISSION</div>
+    <blockquote>Real health advice should be <span class="serif grad">plain, provable,</span> and something you can act on today — <span class="dim">not another product to buy.</span></blockquote>
+    <div class="who"><a href="index.html" class="logo"><span class="logo-mark" aria-hidden="true">✦</span><span class="logo-text">Pure<span>Health</span>Guide</span></a></div>
   </div>
 </section>
 
 <section>
   <div class="wrap">
-    <div class="section-head">
+    <div class="section-head reveal">
       <div class="kicker">WHAT WE FOCUS ON</div>
-      <h2>The four pillars behind every guide</h2>
+      <h2>The four pillars behind <span class="serif grad">every guide</span></h2>
       <p>PureHealthGuide is built around the everyday domains that actually move the needle on how you look and feel.</p>
     </div>
     <div class="pillars-grid">
-      <div class="pillar-card">
-        <div class="pillar-icon">✦</div>
-        <h4>Skin & Aging</h4>
-        <p>Slowing visible aging through what you eat, not what you apply.</p>
-      </div>
-      <div class="pillar-card">
-        <div class="pillar-icon">◐</div>
-        <h4>Nutrition</h4>
-        <p>Simple, sustainable eating patterns built on real food.</p>
-      </div>
-      <div class="pillar-card">
-        <div class="pillar-icon">△</div>
-        <h4>Home Cooking</h4>
-        <p>Restaurant-quality meals made from your own kitchen.</p>
-      </div>
-      <div class="pillar-card">
-        <div class="pillar-icon">◆</div>
-        <h4>Daily Habits</h4>
-        <p>Small, repeatable routines that compound over time.</p>
+      <div class="pillar spot reveal" style="--i:0"><span class="n">01</span><div class="ico">✨</div><h4>Skin &amp; Aging</h4><p>Slowing visible aging through what you eat, not what you apply.</p></div>
+      <div class="pillar spot reveal" style="--i:1"><span class="n">02</span><div class="ico">🥗</div><h4>Nutrition</h4><p>Simple, sustainable eating patterns built on real food.</p></div>
+      <div class="pillar spot reveal" style="--i:2"><span class="n">03</span><div class="ico">🍳</div><h4>Home Cooking</h4><p>Restaurant-quality meals made from your own kitchen.</p></div>
+      <div class="pillar spot reveal" style="--i:3"><span class="n">04</span><div class="ico">🔁</div><h4>Daily Habits</h4><p>Small, repeatable routines that compound over time.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap">
+    <div class="section-head center reveal">
+      <div class="kicker">FAQ</div>
+      <h2>Questions, <span class="serif grad">answered.</span></h2>
+    </div>
+    <div class="faq reveal">
+      <details open><summary>How do I get my guide after I buy it?<span class="pm"></span></summary><p>Checkout runs through PayPal. As soon as your payment is confirmed you're taken straight to your download page — no waiting around.</p></details>
+      <details><summary>Do I need a PayPal account?<span class="pm"></span></summary><p>No. You can pay with your PayPal account or with a debit or credit card through PayPal's secure checkout.</p></details>
+      <details><summary>How much does each guide cost?<span class="pm"></span></summary><p>Every guide in the series is $9.99 — a one-time purchase, no subscription.</p></details>
+      <details><summary>Can I leave a review?<span class="pm"></span></summary><p>Yes. After you buy, you can rate your guide right from the download page. Only verified buyers can review.</p></details>
+      <details><summary>Is this medical advice?<span class="pm"></span></summary><p>No. Our guides are for educational and informational purposes only. Always talk to your physician or a qualified health provider about any medical condition.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="final">
+  <div class="wrap">
+    <div class="final-card reveal">
+      <div class="aurora" aria-hidden="true"><i></i><i></i></div>
+      <div class="wrap">
+        <div class="kicker">START TODAY</div>
+        <h2>Your kitchen is the best health store <span class="serif grad">you'll ever walk into.</span></h2>
+        <p>Pick a guide, download it in seconds, and start with one small change tonight.</p>
+        <div class="cta-row">
+          <a href="#series" class="btn btn-primary">Browse the guides <span class="arrow">→</span></a>
+          <a href="book-never-age-again.html" class="btn btn-ghost">Get Never Age Again — $9.99</a>
+        </div>
       </div>
     </div>
   </div>
@@ -449,12 +181,13 @@
   <div class="wrap">
     <div class="footer-top">
       <div class="footer-tagline">
-        <div class="logo">Pure<span style="color:var(--red)">Health</span>Guide</div>
-        <p>Your path to wellness starts here.</p>
+        <a href="index.html" class="logo"><span class="logo-mark" aria-hidden="true">✦</span><span class="logo-text">Pure<span>Health</span>Guide</span></a>
+        <p>Your path to wellness starts here. Plain, provable advice you can act on today.</p>
+        <div class="socials"><a href="#" target="_blank" rel="noopener" aria-label="YouTube"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8ZM9.6 15.6V8.4l6.2 3.6-6.2 3.6Z"/></svg></a><a href="#" target="_blank" rel="noopener" aria-label="TikTok"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.6 6.7a4.8 4.8 0 0 1-3.8-4.2V2h-3.4v13.4a2.9 2.9 0 1 1-2-2.7V9.2a6.3 6.3 0 1 0 5.4 6.2V8.6a8.2 8.2 0 0 0 3.8 1.2V6.7Z"/></svg></a></div>
       </div>
-      <div class="footer-social">
-        <a href="#" target="_blank" rel="noopener" aria-label="YouTube">▶</a>
-        <a href="#" target="_blank" rel="noopener" aria-label="TikTok">♪</a>
+      <div class="footer-links">
+        <div><h5>THE GUIDES</h5><a href="book-never-age-again.html">Never Age Again</a><a href="book-reset-method.html">The Reset Method</a><a href="book-kitchen-magic.html">Kitchen Magic</a><a href="book-blend-bible.html">The Mix &amp; Match Healthy Method</a><a href="book-fat-loss-reset.html">Learn How to Lose Belly Fat in under 10 Mins</a><a href="book-pest-free-home.html">The Pest-Free Home</a></div>
+        <div><h5>EXPLORE</h5><a href="index.html#series">The series</a><a href="index.html#approach">Our approach</a><a href="index.html#faq">FAQ</a></div>
       </div>
     </div>
 
@@ -466,11 +199,13 @@
     </div>
 
     <div class="footer-bottom">
-      <span>© 2026 PureHealthGuide. All rights reserved.</span>
+      <span>© <span data-year>2026</span> PureHealthGuide. All rights reserved.</span>
       <span>Not medical advice. Consult your physician.</span>
     </div>
+    <div class="giant" aria-hidden="true">PureHealthGuide</div>
   </div>
 </footer>
 
+<script src="assets/site.js?v=2" defer></script>
 </body>
 </html>
