@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Pest-Free Home — PureHealthGuide</title>
+<meta name="description" content="Get rid of ants, roaches, mice and mosquitoes — naturally and cheaply.">
+<meta name="theme-color" content="#070707">
+<meta property="og:title" content="The Pest-Free Home — PureHealthGuide">
+<meta property="og:description" content="Get rid of ants, roaches, mice and mosquitoes — naturally and cheaply.">
+<meta property="og:type" content="website">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/favicon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap">
+<link rel="stylesheet" href="/assets/site.css?v=4">
+<script>document.documentElement.classList.add('js');</script>
+</head>
+<body>
+
+<div class="progress" aria-hidden="true"></div>
+<nav class="nav">
+  <div class="wrap">
+    <a href="/" class="logo"><span class="logo-mark" aria-hidden="true">✦</span><span class="logo-text">Pure<span>Health</span>Guide</span></a>
+    <div class="nav-links"><a href="/">← All guides</a><a href="#inside">What's inside</a><a href="#chapters">Chapters</a><a href="#reviews-section">Reviews</a></div>
+    <a href="#buy" class="btn btn-primary btn-sm">Get the Guide <span class="arrow">→</span></a>
+  </div>
+</nav>
+
+<header class="hero-book">
+  <div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div class="gridlines" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="hero-copy">
+      <div class="crumbs reveal"><a href="/">All guides</a><span>/</span><span>The Pest-Free Home</span></div>
+      <div class="pill reveal" style="--i:1"><span class="tag">87% OFF</span> A HomeGuard Ebook</div>
+      <h1 class="reveal" style="--i:2">The Pest-Free<br>Home<span class="dot">.</span></h1>
+      <p class="sub reveal" style="--i:3">Get rid of ants, roaches, mice and mosquitoes — naturally and cheaply.</p>
+
+      <div class="buy-box reveal" style="--i:4" id="buy">
+        <div class="price-row">
+          <span class="price-now">$9.99</span>
+          <span class="price-off">87% OFF</span>
+          <span class="instant"><span class="live-dot"></span>Instant download</span>
+        </div>
+        <div id="paypal-button-container"></div>
+        <p id="paypal-status"></p>
+        <div class="assure"><span>🔒 Secure PayPal checkout</span><span>💳 Card or PayPal</span><span>⚡ Read in minutes</span></div>
+        <a href="/all-books" class="bundle-upsell"><span class="b-ico" aria-hidden="true">📚</span><span>Or get <b>all 6 guides</b> for <b>$49.99</b> <s>$59.94</s></span><span class="arrow">→</span></a>
+      </div>
+      <a href="#inside" class="see-inside reveal" style="--i:5">See what's inside <span>↓</span></a>
+    </div>
+    <div class="hero-cover reveal" style="--i:2">
+      <div class="book3d floaty">
+        <div class="cover-glow c-pest-free-home" aria-hidden="true"></div>
+        <div class="cover c-pest-free-home"><div class="cover-brand">HomeGuard</div><div class="cover-rule"></div><div class="cover-title small">The<br>Pest-Free<br>Home</div><div class="cover-glyph" aria-hidden="true">🏠</div><div class="cover-foot">Natural · Affordable</div></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap"><div class="tiles"><div class="reveal" style="--i:0"><div class="num"><span data-count="32">32</span></div><div class="unit">pages</div><div class="lbl">of natural pest control</div></div><div class="reveal" style="--i:1"><div class="num"><span data-count="6">6</span></div><div class="unit">pests</div><div class="lbl">ants to bed bugs, one by one</div></div><div class="reveal" style="--i:2"><div class="num"><span data-count="4">4</span></div><div class="unit">DIY remedies</div><div class="lbl">from things you already own</div></div><div class="reveal" style="--i:3"><div class="num"><span data-count="30">30</span></div><div class="unit">day</div><div class="lbl">pest-free plan</div></div></div></div>
+
+<section id="reviews-section">
+  <div class="wrap">
+    <div class="reviews-top">
+      <div class="section-head reveal">
+        <div class="kicker">CUSTOMER REVIEWS</div>
+        <h2 id="reviews-heading">Customer reviews</h2>
+      </div>
+      <div id="carousel-nav">
+        <span id="page-indicator">1/1</span>
+        <button id="prev-page" class="review-nav-btn" aria-label="Previous">‹</button>
+        <button id="next-page" class="review-nav-btn" aria-label="Next">›</button>
+      </div>
+    </div>
+
+    <div id="reviews-carousel"></div>
+
+    <button id="view-all-reviews" class="btn btn-ghost">View all reviews</button>
+  </div>
+</section>
+
+<!-- Modal -->
+<div id="reviews-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:300; align-items:center; justify-content:center; padding:24px;">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3 id="modal-title">Reviews</h3>
+      <button id="close-modal" aria-label="Close">&times;</button>
+    </div>
+    <div id="modal-review-list"></div>
+  </div>
+</div>
+
+<section id="inside">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="kicker">THE PROBLEM</div>
+      <h2>You've sprayed, scrubbed and set traps. They keep coming back.</h2>
+    </div>
+    <div class="vs">
+      <div class="vs-card no reveal">
+        <div class="tag"><span class="mark">✕</span> THE OLD WAY</div>
+        <div class="big">Harsh chemicals</div>
+        <div class="small">and pricey exterminators that don't fix the cause</div>
+      </div>
+      <div class="vs-arrow" aria-hidden="true"><span>→</span></div>
+      <div class="vs-card yes reveal" style="--i:2">
+        <div class="tag"><span class="mark">✓</span> THE HOMEGUARD WAY</div>
+        <div class="big">Natural &amp; cheap</div>
+        <div class="small">seal, clean and treat with what you already have</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap inside">
+    <div class="sticky reveal">
+      <div class="kicker">WHAT'S INSIDE</div>
+      <h2>Everything you need for a pest-free home.</h2>
+      <p style="color:var(--dim); margin-top:18px; font-size:17px;">Delivered instantly after checkout — start reading in minutes.</p>
+      <a href="#buy" class="btn btn-primary" style="margin-top:30px;">Get it for $9.99 <span class="arrow">→</span></a>
+    </div>
+    <div class="inside-list"><div class="inside-item reveal" style="--i:0"><div><h4>Prevention that actually works</h4><p>Seal entry points, store food right and fix the moisture pests need.</p></div></div><div class="inside-item reveal" style="--i:1"><div><h4>4 natural DIY remedies</h4><p>Vinegar spray, diatomaceous earth, peppermint oil and a fruit fly trap — with steps.</p></div></div><div class="inside-item reveal" style="--i:2"><div><h4>A pest-by-pest guide</h4><p>Ants, cockroaches, mosquitoes, mice, spiders and bed bugs — what to do for each.</p></div></div><div class="inside-item reveal" style="--i:3"><div><h4>A 30-day plan + safety rules</h4><p>Week-by-week steps, a monthly checklist, and how to keep kids and pets safe.</p></div></div></div>
+  </div>
+</section>
+
+<section id="chapters">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="kicker">CHAPTER GUIDE</div>
+      <h2>Eight chapters. One pest-free home.</h2>
+    </div>
+    <div class="chapters"><div class="chapter spot reveal" style="--i:0"><div class="num">01</div><h3>Introduction</h3><p>Why most pests don't need harsh chemicals.</p></div><div class="chapter spot reveal" style="--i:1"><div class="num">02</div><h3>Know Your Pests</h3><p>The usual suspects and the signs to look for.</p></div><div class="chapter spot reveal" style="--i:2"><div class="num">03</div><h3>Prevention First</h3><p>Seal, store and dry out.</p></div><div class="chapter spot reveal" style="--i:0"><div class="num">04</div><h3>Natural DIY Remedies</h3><p>Four remedies from your kitchen cupboard.</p></div><div class="chapter spot reveal" style="--i:1"><div class="num">05</div><h3>Pest-by-Pest Guide</h3><p>Six pests, six simple plans.</p></div><div class="chapter spot reveal" style="--i:2"><div class="num">06</div><h3>Garden &amp; Outdoors</h3><p>Plants that repel pests, and yard rules.</p></div><div class="chapter spot reveal" style="--i:0"><div class="num">07</div><h3>Safe for Kids &amp; Pets</h3><p>What to use — and what to avoid.</p></div><div class="chapter spot reveal" style="--i:1"><div class="num">08</div><h3>Your 30-Day Pest-Free Plan</h3><p>Week by week, plus a monthly checklist.</p></div><div class="chapter spot reveal" style="--i:2"><div class="num">09</div><h3>Mistakes &amp; When to Call a Pro</h3><p>Know when DIY is enough — and when it isn't.</p></div></div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="kicker">KEEP GOING</div>
+      <h2>More from the series</h2>
+    </div>
+    <div class="more-grid"><a href="/never-age-again" class="reveal" style="--i:0"><div class="cover c-never-age-again"><div class="cover-brand">PureHealthGuide</div><div class="cover-rule"></div><div class="cover-title">Never<br>Age<br>Again</div><div class="cover-glyph" aria-hidden="true">✨</div><div class="cover-foot">Anti-aging · Clear skin</div></div><h4>Never Age Again</h4><span>$9.99</span></a><a href="/reset-method" class="reveal" style="--i:1"><div class="cover c-reset-method"><div class="cover-brand">PureHealthGuide</div><div class="cover-rule"></div><div class="cover-title">The<br>Reset<br>Method</div><div class="cover-glyph" aria-hidden="true">🌱</div><div class="cover-foot">Mind · Body · Habits</div></div><h4>The Reset Method</h4><span>$9.99</span></a><a href="/kitchen-magic" class="reveal" style="--i:2"><div class="cover c-kitchen-magic"><div class="cover-brand">PureHealthGuide</div><div class="cover-rule"></div><div class="cover-title">Kitchen<br>Magic</div><div class="cover-sub">Restaurant secrets, made at home</div><div class="cover-glyph" aria-hidden="true">🍳</div><div class="cover-foot">+ Bonus meal book</div></div><h4>Kitchen Magic</h4><span>$9.99</span></a><a href="/mix-and-match-healthy-method" class="reveal" style="--i:3"><div class="cover c-blend-bible"><div class="cover-brand">PureHealthGuide</div><div class="cover-rule"></div><div class="cover-title">Mix &amp;<br>Match</div><div class="cover-sub">The Healthy Method</div><div class="cover-glyph" aria-hidden="true">🥤</div><div class="cover-foot">Food · Smoothies · Habits</div></div><h4>The Mix &amp; Match Healthy Method</h4><span>$9.99</span></a><a href="/lose-belly-fat" class="reveal" style="--i:4"><div class="cover c-fat-loss-reset"><div class="cover-brand">PureHealthGuide</div><div class="cover-rule"></div><div class="cover-title">Lose<br>Belly<br>Fat</div><div class="cover-sub">In under 10 mins</div><div class="cover-glyph" aria-hidden="true">🔥</div><div class="cover-foot">Food · Habits · Results</div></div><h4>Learn How to Lose Belly Fat in under 10 Mins</h4><span>$9.99</span></a></div>
+  </div>
+</section>
+
+<section class="final">
+  <div class="wrap">
+    <div class="final-card reveal">
+      <div class="aurora" aria-hidden="true"><i></i><i></i></div>
+      <div class="wrap">
+        <div class="kicker">READY WHEN YOU ARE</div>
+        <h2>Keep them out — naturally.</h2>
+        <p>Get the full guide — prevention, remedies, a pest-by-pest plan and a 30-day schedule — for less than one exterminator visit.</p>
+        <div class="cta-row">
+          <a href="#buy" class="btn btn-primary">Buy the ebook — $9.99 <span class="arrow">→</span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-top">
+      <div class="footer-tagline">
+        <a href="/" class="logo"><span class="logo-mark" aria-hidden="true">✦</span><span class="logo-text">Pure<span>Health</span>Guide</span></a>
+        <p>Your path to wellness starts here. Plain, provable advice you can act on today.</p>
+        <div class="socials"><a href="#" target="_blank" rel="noopener" aria-label="YouTube"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8ZM9.6 15.6V8.4l6.2 3.6-6.2 3.6Z"/></svg></a><a href="#" target="_blank" rel="noopener" aria-label="TikTok"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.6 6.7a4.8 4.8 0 0 1-3.8-4.2V2h-3.4v13.4a2.9 2.9 0 1 1-2-2.7V9.2a6.3 6.3 0 1 0 5.4 6.2V8.6a8.2 8.2 0 0 0 3.8 1.2V6.7Z"/></svg></a></div>
+      </div>
+      <div class="footer-links">
+        <div><h5>THE GUIDES</h5><a href="/never-age-again">Never Age Again</a><a href="/reset-method">The Reset Method</a><a href="/kitchen-magic">Kitchen Magic</a><a href="/mix-and-match-healthy-method">The Mix &amp; Match Healthy Method</a><a href="/lose-belly-fat">Learn How to Lose Belly Fat in under 10 Mins</a><a href="/pest-free-home">The Pest-Free Home</a></div>
+        <div><h5>EXPLORE</h5><a href="/#series">The series</a><a href="/#approach">Our approach</a><a href="/#faq">FAQ</a></div>
+      </div>
+    </div>
+
+    <div class="disclaimer">
+      <strong>LEGAL DISCLAIMER</strong>
+      All content and information provided by PureHealthGuide, including but not limited to text, graphics, images, and guide content, is for educational and informational purposes only. This platform does not provide medical advice, professional diagnosis, opinion, or treatment. The information provided is not a substitute for professional medical expertise or treatment.
+      <br><br>
+      Always seek the advice of your physician or other qualified health provider with any questions you may have regarding a medical condition. Never disregard professional medical advice or delay in seeking it because of something you have read or received on this platform. PureHealthGuide is not responsible or liable for any advice, course of treatment, diagnosis, or any other information, services, or products that you obtain through this site. Reliance on any information provided is solely at your own risk.
+    </div>
+
+    <div class="footer-bottom">
+      <span>© <span data-year>2026</span> PureHealthGuide. All rights reserved.</span>
+      <span>Not medical advice. Consult your physician.</span>
+    </div>
+    <div class="giant" aria-hidden="true">PureHealthGuide</div>
+  </div>
+</footer>
+
+<div class="sticky-buy" aria-hidden="false">
+  <div class="t"><b>The Pest-Free Home</b><span>$9.99 · 87% OFF</span></div>
+  <a href="#buy" class="btn btn-primary btn-sm">Get it <span class="arrow">→</span></a>
+</div>
+
+<!-- Payment loading overlay -->
+<div id="payment-loading-overlay" style="display:none; position:fixed; inset:0; background:rgba(7,7,7,0.92); z-index:9999; align-items:center; justify-content:center; flex-direction:column; text-align:center; padding:24px;">
+  <div style="width:52px; height:52px; border:4px solid rgba(255,255,255,0.12); border-top-color:#ff3b30; border-radius:50%; animation:payment-spin 0.8s linear infinite; margin-bottom:22px;"></div>
+  <div id="payment-loading-text" style="color:#f5f5f3; font-size:17px; font-weight:600; margin-bottom:6px;">Preparing secure checkout…</div>
+  <div id="payment-loading-subtext" style="color:#a3a39e; font-size:14px;">This only takes a second.</div>
+</div>
+
+<script>
+(function () {
+  var SUPABASE_URL = "https://zarasbzkxjlsiydniitk.supabase.co";
+  var FUNCTIONS_BASE = SUPABASE_URL + "/functions/v1";
+  var SUPABASE_ANON_KEY = "sb_publishable_3lDfYDfblJDSnh62F8wHSQ_c789CdX5";
+  var PRODUCT_ID = "pest-free-home";
+
+  var PAGE_SIZE = 3;
+  var currentPage = 0;
+  var reviews = [];
+
+  function stars(n) {
+    return '★'.repeat(n) + '☆'.repeat(5 - n);
+  }
+
+  function renderCarousel() {
+    var container = document.getElementById('reviews-carousel');
+    var totalPages = Math.max(1, Math.ceil(reviews.length / PAGE_SIZE));
+    currentPage = Math.min(currentPage, totalPages - 1);
+
+    var slice = reviews.slice(currentPage * PAGE_SIZE, currentPage * PAGE_SIZE + PAGE_SIZE);
+    container.innerHTML = slice.map(function (r) {
+      return '<div class="review-card">' +
+        '<div class="review-stars">' + stars(r.rating) + '</div>' +
+        '<div class="review-name">' + escapeHtml(r.name) + '</div>' +
+        (r.comment ? '<div class="review-comment">' + escapeHtml(r.comment) + '</div>' : '') +
+        '</div>';
+    }).join('');
+
+    document.getElementById('page-indicator').textContent = (currentPage + 1) + '/' + totalPages;
+    document.getElementById('prev-page').disabled = currentPage === 0;
+    document.getElementById('next-page').disabled = currentPage >= totalPages - 1;
+  }
+
+  function escapeHtml(str) {
+    var div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  document.getElementById('prev-page').addEventListener('click', function () {
+    if (currentPage > 0) { currentPage--; renderCarousel(); }
+  });
+  document.getElementById('next-page').addEventListener('click', function () {
+    currentPage++; renderCarousel();
+  });
+
+  document.getElementById('view-all-reviews').addEventListener('click', function () {
+    document.getElementById('modal-title').textContent = reviews.length + ' Reviews';
+    document.getElementById('modal-review-list').innerHTML = reviews.map(function (r) {
+      return '<div class="modal-review-row">' +
+        '<div class="review-stars">' + stars(r.rating) + '</div>' +
+        '<div class="review-name">' + escapeHtml(r.name) + '</div>' +
+        (r.comment ? '<div class="review-comment">' + escapeHtml(r.comment) + '</div>' : '') +
+        '</div>';
+    }).join('');
+    document.getElementById('reviews-modal').style.display = 'flex';
+  });
+  document.getElementById('close-modal').addEventListener('click', function () {
+    document.getElementById('reviews-modal').style.display = 'none';
+  });
+  document.getElementById('reviews-modal').addEventListener('click', function (e) {
+    if (e.target === this) this.style.display = 'none';
+  });
+
+  fetch(FUNCTIONS_BASE + '/get-reviews?product=' + encodeURIComponent(PRODUCT_ID), {
+    headers: { 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY, 'apikey': SUPABASE_ANON_KEY }
+  })
+    .then(function (res) { return res.json(); })
+    .then(function (data) {
+      reviews = data.reviews || [];
+      if (!reviews.length) {
+        document.getElementById('reviews-heading').textContent = 'Customer reviews';
+        document.getElementById('reviews-carousel').innerHTML =
+          '<p style="color:var(--dim); font-size:14px; grid-column:1/-1;">No reviews yet — be the first to leave one after your purchase!</p>';
+        document.getElementById('carousel-nav').style.display = 'none';
+        document.getElementById('view-all-reviews').style.display = 'none';
+        return;
+      }
+      document.getElementById('reviews-heading').textContent =
+        'Customer reviews (' + data.average.toFixed(1) + '★, ' + data.count + ')';
+      renderCarousel();
+    })
+    .catch(function () {
+      document.getElementById('reviews-heading').textContent = 'Customer reviews';
+      document.getElementById('reviews-carousel').innerHTML =
+        '<p style="color:var(--dim); font-size:14px; grid-column:1/-1;">No reviews yet — be the first to leave one after your purchase!</p>';
+      document.getElementById('carousel-nav').style.display = 'none';
+      document.getElementById('view-all-reviews').style.display = 'none';
+    });
+})();
+</script>
+
+<script>
+  function showPaymentOverlay(text, subtext) {
+    document.getElementById('payment-loading-text').textContent = text;
+    document.getElementById('payment-loading-subtext').textContent = subtext;
+    document.getElementById('payment-loading-overlay').style.display = 'flex';
+  }
+  function hidePaymentOverlay() {
+    document.getElementById('payment-loading-overlay').style.display = 'none';
+  }
+</script>
+
+<script src="https://www.paypal.com/sdk/js?client-id=BAAkttcr96LWYrYpD_NV5vY4G3g3WJEqPqXqc1MCiMAHL7CvMT2f4VRBXOrRL9aa8h158TjlI57ugs2aR0&currency=USD&enable-funding=card"></script>
+
+<script>
+  // ---- Fill these in once, then leave them alone ----
+  var SUPABASE_URL = "https://zarasbzkxjlsiydniitk.supabase.co";
+  var FUNCTIONS_BASE = SUPABASE_URL + "/functions/v1";
+  var SUPABASE_ANON_KEY = "sb_publishable_3lDfYDfblJDSnh62F8wHSQ_c789CdX5";
+  var PRODUCT_ID = "pest-free-home";
+  // -----------------------------------------------------
+
+  var statusEl = document.getElementById('paypal-status');
+
+  paypal.Buttons({
+    onClick: function () { showPaymentOverlay('Preparing secure checkout…', 'Connecting you to PayPal.'); },
+    onCancel: function () { hidePaymentOverlay(); },
+    style: { layout: 'vertical', color: 'blue', shape: 'rect', label: 'pay' },
+
+    createOrder: function () {
+      statusEl.textContent = '';
+      showPaymentOverlay('Preparing secure checkout…', 'Connecting you to PayPal.');
+      return fetch(FUNCTIONS_BASE + '/create-paypal-order', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+          'apikey': SUPABASE_ANON_KEY
+        },
+        body: JSON.stringify({ product: PRODUCT_ID })
+      })
+        .then(function (res) { return res.json(); })
+        .then(function (data) { hidePaymentOverlay(); return data.id; });
+    },
+
+    onApprove: function (data) {
+      statusEl.textContent = 'Confirming your payment…';
+      showPaymentOverlay('Payment confirmed!', 'Preparing your download…');
+      return fetch(FUNCTIONS_BASE + '/capture-paypal-order', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+          'apikey': SUPABASE_ANON_KEY
+        },
+        body: JSON.stringify({ orderID: data.orderID })
+      })
+        .then(function (res) { return res.json(); })
+        .then(function (result) {
+          if (result.success) {
+            window.location.href = '/thank-you-pest-free-home?order=' + encodeURIComponent(data.orderID);
+          } else {
+            hidePaymentOverlay();
+            statusEl.textContent = 'Payment did not complete. Please try again.';
+          }
+        });
+    },
+
+    onError: function () {
+      hidePaymentOverlay();
+      statusEl.textContent = 'Something went wrong. Please try again.';
+    }
+  }).render('#paypal-button-container');
+</script>
+
+<script src="/assets/site.js?v=4" defer></script>
+</body>
+</html>
