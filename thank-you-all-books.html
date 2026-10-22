@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thank You — The Complete Collection — PureHealthGuide</title>
+<meta name="description" content="Your PureHealthGuide download.">
+<meta name="theme-color" content="#070707">
+<meta name="robots" content="noindex">
+<meta property="og:title" content="Thank You — The Complete Collection — PureHealthGuide">
+<meta property="og:description" content="Your PureHealthGuide download.">
+<meta property="og:type" content="website">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/favicon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap">
+<link rel="stylesheet" href="/assets/site.css?v=4">
+<script>document.documentElement.classList.add('js');</script>
+</head>
+<body class="ty-body">
+
+<nav class="nav">
+  <div class="wrap">
+    <a href="/" class="logo"><span class="logo-mark" aria-hidden="true">✦</span><span class="logo-text">Pure<span>Health</span>Guide</span></a>
+    <a href="/" class="btn btn-ghost btn-sm">All guides</a>
+  </div>
+</nav>
+
+<main class="ty-main">
+  <div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div class="gridlines" aria-hidden="true"></div>
+
+  <div class="ty-card" id="ty-card" data-state="loading">
+    <div class="ty-badge" aria-hidden="true">
+      <div class="ring"></div>
+      <div class="disc">
+        <svg viewBox="0 0 40 40"><path class="check-path" d="M10 21 l7 7 l14 -16"/><path class="x-path" d="M13 13 L27 27 M27 13 L13 27"/></svg>
+      </div>
+    </div>
+    <div class="kicker">THE COMPLETE COLLECTION</div>
+    <h1 id="title">Checking your order…</h1>
+    <p id="message">Give us a second while we confirm your payment with PayPal.</p>
+
+    <button class="btn btn-primary dl-btn" id="download-wait" disabled>Preparing your downloads…</button>
+    <div class="dl-list" id="download-list"></div>
+
+    <div class="ty-steps"><span>✓ Paid</span><span>✓ Verified</span><span>↓ Download</span></div>
+
+    <a href="/" class="back">← Back to PureHealthGuide</a>
+  </div>
+</main>
+
+
+<div class="ty-foot">© <span data-year>2026</span> PureHealthGuide · Not medical advice. Consult your physician.</div>
+
+<script>
+  var SUPABASE_URL = "https://zarasbzkxjlsiydniitk.supabase.co";
+  var FUNCTIONS_BASE = SUPABASE_URL + "/functions/v1";
+  var SUPABASE_ANON_KEY = "sb_publishable_3lDfYDfblJDSnh62F8wHSQ_c789CdX5";
+
+  var titleEl = document.getElementById('title');
+  var msgEl = document.getElementById('message');
+  var waitBtn = document.getElementById('download-wait');
+  var listEl = document.getElementById('download-list');
+
+  var params = new URLSearchParams(window.location.search);
+  var orderID = params.get('order');
+
+  if (!orderID) {
+    titleEl.textContent = "No order found";
+    msgEl.textContent = "It looks like you reached this page without completing a purchase.";
+    waitBtn.style.display = 'none';
+  } else {
+    fetch(FUNCTIONS_BASE + '/get-download-link', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+        'apikey': SUPABASE_ANON_KEY
+      },
+      body: JSON.stringify({ orderID: orderID })
+    })
+      .then(function (res) { return res.json(); })
+      .then(function (data) {
+        if (data.files && data.files.length) {
+          titleEl.textContent = "Thank you for your purchase!";
+          msgEl.textContent = "All " + data.files.length + " guides are ready. Tap each one to download — the links work for 30 minutes.";
+          waitBtn.style.display = 'none';
+          data.files.forEach(function (file) {
+            var a = document.createElement('a');
+            a.className = 'btn btn-primary dl-btn';
+            a.href = file.url;
+            a.textContent = file.label;
+            listEl.appendChild(a);
+          });
+        } else {
+          titleEl.textContent = "We couldn't verify this order";
+          msgEl.textContent = data.error || "If you just paid, wait a few seconds and refresh this page.";
+          waitBtn.style.display = 'none';
+        }
+      })
+      .catch(function () {
+        titleEl.textContent = "Something went wrong";
+        msgEl.textContent = "Please refresh this page. If it keeps happening, contact us with your order ID: " + orderID;
+        waitBtn.style.display = 'none';
+      });
+  }
+</script>
+
+<script>
+  // Visual state only: mirrors whatever the order check above writes into #title.
+  (function () {
+    var card = document.getElementById('ty-card');
+    var title = document.getElementById('title');
+    var celebrated = false;
+    function sync() {
+      var t = title.textContent;
+      var state = /^Checking/.test(t) ? 'loading' : /^Thank you/.test(t) ? 'success' : 'error';
+      card.setAttribute('data-state', state);
+      if (state === 'success' && !celebrated) {
+        celebrated = true;
+        if (window.celebrate) window.celebrate();
+        else window.addEventListener('load', function () { window.celebrate && window.celebrate(); });
+      }
+    }
+    new MutationObserver(sync).observe(title, { childList: true, characterData: true, subtree: true });
+    sync();
+  })();
+</script>
+<script src="/assets/site.js?v=4" defer></script>
+</body>
+</html>
